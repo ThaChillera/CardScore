@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="1dp"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/roundcount_boerenbridge_roundnumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        android:layout_toStartOf="@id/roundcount_boerenbridge_cardcount"
+        android:layout_alignBottom="@id/roundcount_boerenbridge_cardcount"
+        android:text="@string/card_count"
+        />
+
+    <TextView
+        android:id="@+id/roundcount_boerenbridge_cardcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>
