@@ -1,5 +1,6 @@
 package com.robinkuiper.cardsscorekeeper.boerenBridge;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,34 +8,54 @@ import android.util.TypedValue;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.robinkuiper.cardsscorekeeper.R;
 import com.robinkuiper.cardsscorekeeper.data.Player;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
+    final private String PLAYERDATALOCATION = "playerdata.json";
+
+    ArrayList<Player> players;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, "onCreate: ");
+        try {
+            FileInputStream inputStream = getApplicationContext().openFileInput(PLAYERDATALOCATION);
+            players = new ArrayList<>(Arrays.asList(new Gson().fromJson(new InputStreamReader(inputStream), Player[].class)));
+
+        } catch (IOException exception) {
+            Log.e(TAG, "onCreate: ", exception);
+            players = new ArrayList<>();
+
+            for (int i = 0; i < 4; i++) {
+                players.add(new Player("Player " + (i + 1)));
+            }
+        }
 
         setContentView(R.layout.activity_boeren_bridge);
 
         GridLayout grid = findViewById(R.id.boeren_bridge_gridlayout);
 
-        ArrayList<Player> players = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            players.add(new Player("Player " + (i + 1)));
-        }
-
-        float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, this.getResources().getDisplayMetrics());
-        float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, this.getResources().getDisplayMetrics());
+        float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, this.getResources().getDisplayMetrics());
+        float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, this.getResources().getDisplayMetrics());
 
         LayoutParams params = new LayoutParams((int) width, (int) height);
 
@@ -74,6 +95,27 @@ public class BoerenBridge extends AppCompatActivity {
                 sc.setLayoutParams(params);
                 grid.addView(sc);
             }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        try {
+            for (Player player: players) {
+                player.reset();
+            }
+
+            FileOutputStream outputStream = getApplicationContext().openFileOutput(PLAYERDATALOCATION, Context.MODE_PRIVATE);
+            outputStream.write(gson.toJson(players.toArray()).getBytes());
+            outputStream.close();
+
+        } catch (IOException exception) {
+            Toast.makeText(this, "PlayerData failed to save, some info could be lost", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -41,4 +41,9 @@ public class Player {
 
         return score;
     }
+
+    public void reset() {
+        predictedScores = new ArrayList<>();
+        enteredScores = new ArrayList<>();
+    }
 }
