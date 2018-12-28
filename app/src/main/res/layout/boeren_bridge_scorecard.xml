@@ -24,16 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="@color/text"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/scorecard_boerenbridge_predictrounds_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/predict_score"
-            android:visibility="visible"/>
+            android:textColor="@color/text" />
 
     </RelativeLayout>
 
@@ -62,16 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="@color/text"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/scorecard_boerenbridge_scorerounds_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/enter_score"
-            android:visibility="visible"/>
+            android:textColor="@color/text" />
 
     </RelativeLayout>
 </LinearLayout>

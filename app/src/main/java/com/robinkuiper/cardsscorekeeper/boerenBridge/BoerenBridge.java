@@ -2,8 +2,8 @@ package com.robinkuiper.cardsscorekeeper.boerenBridge;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 import android.widget.TextView;
@@ -15,9 +15,14 @@ import java.util.ArrayList;
 
 public class BoerenBridge extends AppCompatActivity {
 
+    final private String TAG = "BoerenBridge";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "onCreate: ");
+
         setContentView(R.layout.activity_boeren_bridge);
 
         GridLayout grid = findViewById(R.id.boeren_bridge_gridlayout);
@@ -48,15 +53,32 @@ public class BoerenBridge extends AppCompatActivity {
 
         for (int rounds = 1; rounds < ((maxCards * 2)); rounds++) {
             //add general round info
-            RoundCount rc = new RoundCount(this, rounds, rounds < maxCards ? rounds: maxCards - (rounds - maxCards));
+            ScoreManager predictedScoreManager = new ScoreManager();
+            ScoreManager enteredScoreManager = new ScoreManager();
+            int cardCount = rounds < maxCards ? rounds: maxCards - (rounds - maxCards);
+            RoundCount rc = new RoundCount(this, predictedScoreManager, enteredScoreManager, players.size(), rounds, cardCount);
             rc.setLayoutParams(params);
             grid.addView(rc);
 
             //add player round info
             for (Player player: players) {
-                ScoreCard sc = new ScoreCard(this);
+                ScoreCard sc = new ScoreCard(this, predictedScoreManager, enteredScoreManager);
                 sc.setLayoutParams(params);
                 grid.addView(sc);
+            }
+        }
+    }
+
+    class ScoreManager {
+        ArrayList<TextView> textViews = new ArrayList<>();
+
+        void addTextView(TextView view) {
+            textViews.add(view);
+        }
+
+        void enterScores(int[] scores) {
+            for (int i = 0; i < scores.length; i++) {
+                textViews.get(i).setText(Integer.toString(scores[i]));
             }
         }
     }
