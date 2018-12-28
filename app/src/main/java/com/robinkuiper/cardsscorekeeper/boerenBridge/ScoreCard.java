@@ -12,7 +12,7 @@ public class ScoreCard extends LinearLayout {
 
     TextView predictedRoundsView, scoredRoundsView;
 
-    public ScoreCard(Context context, BoerenBridge.ScoreManager predictedScoreManager, BoerenBridge.ScoreManager enteredScoreManager) {
+    public ScoreCard(Context context, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -21,8 +21,8 @@ public class ScoreCard extends LinearLayout {
         predictedRoundsView = findViewById(R.id.scorecard_boerenbridge_predictedrounds);
         scoredRoundsView = findViewById(R.id.scorecard_boerenbridge_scoredrounds);
 
-        predictedScoreManager.addTextView(predictedRoundsView);
-        enteredScoreManager.addTextView(scoredRoundsView);
+        predictedRoundScoreManager.addTextView(predictedRoundsView);
+        enteredRoundScoreManager.addTextView(scoredRoundsView);
     }
 
     public void setPrediction(int score) {

@@ -21,7 +21,7 @@ import com.robinkuiper.cardsscorekeeper.R;
 
 public class RoundCount extends RelativeLayout {
 
-    public RoundCount(Context context, BoerenBridge.ScoreManager predictedScoreManager, BoerenBridge.ScoreManager enteredScoreManager, int playerCount, int roundNumber, int cardCount) {
+    public RoundCount(Context context, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int playerCount, int roundNumber, int cardCount) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -36,19 +36,19 @@ public class RoundCount extends RelativeLayout {
         Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
         Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
 
-        predictScore.setOnClickListener(new ButtonOnClickListener(context, predictedScoreManager, playerCount, predictScore, enterScore));
-        enterScore.setOnClickListener(new ButtonOnClickListener(context, enteredScoreManager, playerCount, enterScore, null));
+        predictScore.setOnClickListener(new ButtonOnClickListener(context, predictedRoundScoreManager, playerCount, predictScore, enterScore));
+        enterScore.setOnClickListener(new ButtonOnClickListener(context, enteredRoundScoreManager, playerCount, enterScore, null));
     }
 
     private class ButtonOnClickListener implements OnClickListener {
         Context context;
-        BoerenBridge.ScoreManager scoreManager;
+        BoerenBridge.RoundScoreManager roundScoreManager;
         int playerCount;
         Button buttonOld, buttonNew;
 
-        ButtonOnClickListener(Context context, BoerenBridge.ScoreManager scoreManager, int playerCount, Button buttonOld, Button buttonNew) {
+        ButtonOnClickListener(Context context, BoerenBridge.RoundScoreManager roundScoreManager, int playerCount, Button buttonOld, Button buttonNew) {
             this.context = context;
-            this.scoreManager = scoreManager;
+            this.roundScoreManager = roundScoreManager;
             this.playerCount = playerCount;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
@@ -69,7 +69,7 @@ public class RoundCount extends RelativeLayout {
             }
 
             // Add the buttons
-            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, context, scoreManager, buttonOld, buttonNew))
+            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, context, roundScoreManager, buttonOld, buttonNew))
                     .setNegativeButton(R.string.cancel, null);
 
             final AlertDialog dialog = builder.show();
@@ -96,13 +96,13 @@ public class RoundCount extends RelativeLayout {
     private class DialogPositiveOnClickListener implements DialogInterface.OnClickListener {
         LinearLayout linearLayout;
         Context context;
-        BoerenBridge.ScoreManager scoreManager;
+        BoerenBridge.RoundScoreManager roundScoreManager;
         Button buttonOld, buttonNew;
 
-        public DialogPositiveOnClickListener(LinearLayout linearLayout, Context context, BoerenBridge.ScoreManager scoreManager, Button buttonOld, Button buttonNew) {
+        public DialogPositiveOnClickListener(LinearLayout linearLayout, Context context, BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
             this.linearLayout = linearLayout;
             this.context = context;
-            this.scoreManager = scoreManager;
+            this.roundScoreManager = roundScoreManager;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
         }
@@ -129,7 +129,7 @@ public class RoundCount extends RelativeLayout {
             }
 
             //return values
-            scoreManager.enterScores(inputs);
+            roundScoreManager.enterScores(inputs);
 
             //change buttons
             buttonOld.setVisibility(GONE);

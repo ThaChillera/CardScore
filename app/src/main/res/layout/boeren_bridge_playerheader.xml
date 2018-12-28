@@ -7,6 +7,15 @@
     android:background="@color/colorPrimary">
 
     <TextView
+        android:id="@+id/playerheader_boerenbridge_playernumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/text"
+        />
+
+    <TextView
         android:id="@+id/playerheader_boerenbridge_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,11 +24,11 @@
         />
 
     <TextView
-        android:id="@+id/playerheader_boerenbridge_playernumber"
+        android:id="@+id/playerheader_boerenbridge_playerscore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/text"
         />
 
