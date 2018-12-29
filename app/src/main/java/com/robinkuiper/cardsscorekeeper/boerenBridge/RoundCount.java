@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,21 +20,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.Player;
+import com.robinkuiper.cardsscorekeeper.data.PlayerData;
 
 import java.util.ArrayList;
 
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
-    final private  ArrayList<Player> PLAYERS;
+    final private PlayerData playerData = PlayerData.getInstance();
     final int STARTINGPLAYER;
 
-    public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, ArrayList<Player> PLAYERS, int roundNumber, int cardCount) {
+    public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
-        this.PLAYERS = PLAYERS;
-        this.STARTINGPLAYER = (roundNumber -1) % PLAYERS.size();
+        this.STARTINGPLAYER = (roundNumber -1) % playerData.getPlayerCount();
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_roundcount, this);
@@ -54,8 +52,8 @@ public class RoundCount extends RelativeLayout {
     }
 
     private int getPlayerIndex(int i) {
-        if (i >= PLAYERS.size()) {
-            return i - PLAYERS.size();
+        if (i >= playerData.getPlayerCount()) {
+            return i - playerData.getPlayerCount();
         } else {
             return i;
         }
@@ -98,7 +96,7 @@ public class RoundCount extends RelativeLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
             LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
-            for (int i = STARTINGPLAYER; i < PLAYERS.size() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerData.getPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
@@ -110,7 +108,7 @@ public class RoundCount extends RelativeLayout {
                 innerLayout.addView(getSpace());
 
                 TextView nameTextView = new TextView(CONTEXT);
-                nameTextView.setText(PLAYERS.get(index).getName());
+                nameTextView.setText(playerData.getPlayerName(i));
                 nameTextView.setGravity(Gravity.CENTER);
                 nameTextView.setLayoutParams(params);
 
@@ -123,7 +121,7 @@ public class RoundCount extends RelativeLayout {
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 input.setOnFocusChangeListener(new InputOnFocusChangeListener(dialog));
-                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == PLAYERS.size() - 1, dialog));
+                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == playerData.getPlayerCount() - 1, dialog));
 
                 innerLayout.addView(input);
                 innerLayout.addView(getSpace());
@@ -155,10 +153,10 @@ public class RoundCount extends RelativeLayout {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // User clicked OK button
-            int[] inputs = new int[PLAYERS.size()];
+            int[] inputs = new int[playerData.getPlayerCount()];
 
             //starts at STARTINGPLAYER, since input list starts at STARTINGPLAYER
-            for (int i = STARTINGPLAYER; i < PLAYERS.size() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerData.getPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3 );
