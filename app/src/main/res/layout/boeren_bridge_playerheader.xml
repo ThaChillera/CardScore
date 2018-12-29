@@ -7,15 +7,6 @@
     android:background="@color/colorPrimary">
 
     <TextView
-        android:id="@+id/playerheader_boerenbridge_playernumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:textColor="@color/text"
-        />
-
-    <TextView
         android:id="@+id/playerheader_boerenbridge_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

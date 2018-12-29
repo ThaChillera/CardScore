@@ -22,18 +22,17 @@ import android.widget.Toast;
 import com.robinkuiper.cardsscorekeeper.R;
 import com.robinkuiper.cardsscorekeeper.data.PlayerData;
 
-import java.util.ArrayList;
-
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
     final private PlayerData playerData = PlayerData.getInstance();
+    final private int[] selectedPlayers = playerData.getSelectedPlayerIds();
     final int STARTINGPLAYER;
 
     public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
-        this.STARTINGPLAYER = (roundNumber -1) % playerData.getPlayerCount();
+        this.STARTINGPLAYER = (roundNumber -1) % selectedPlayers.length;
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_roundcount, this);
@@ -52,8 +51,8 @@ public class RoundCount extends RelativeLayout {
     }
 
     private int getPlayerIndex(int i) {
-        if (i >= playerData.getPlayerCount()) {
-            return i - playerData.getPlayerCount();
+        if (i >= selectedPlayers.length) {
+            return i - selectedPlayers.length;
         } else {
             return i;
         }
@@ -96,7 +95,7 @@ public class RoundCount extends RelativeLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
             LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
-            for (int i = STARTINGPLAYER; i < playerData.getPlayerCount() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < selectedPlayers.length + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
@@ -108,7 +107,7 @@ public class RoundCount extends RelativeLayout {
                 innerLayout.addView(getSpace());
 
                 TextView nameTextView = new TextView(CONTEXT);
-                nameTextView.setText(playerData.getPlayerName(i));
+                nameTextView.setText(playerData.getPlayerName(selectedPlayers[index]));
                 nameTextView.setGravity(Gravity.CENTER);
                 nameTextView.setLayoutParams(params);
 
@@ -121,7 +120,7 @@ public class RoundCount extends RelativeLayout {
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 input.setOnFocusChangeListener(new InputOnFocusChangeListener(dialog));
-                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == playerData.getPlayerCount() - 1, dialog));
+                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == selectedPlayers.length - 1, dialog));
 
                 innerLayout.addView(input);
                 innerLayout.addView(getSpace());
@@ -153,13 +152,13 @@ public class RoundCount extends RelativeLayout {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // User clicked OK button
-            int[] inputs = new int[playerData.getPlayerCount()];
+            int[] inputs = new int[selectedPlayers.length];
 
             //starts at STARTINGPLAYER, since input list starts at STARTINGPLAYER
-            for (int i = STARTINGPLAYER; i < playerData.getPlayerCount() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < selectedPlayers.length + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
-                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(1);
+                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3);
 
                 //verify input
                 int input;

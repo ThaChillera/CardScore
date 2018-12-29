@@ -10,8 +10,10 @@
     <string name="cancel">Cancel</string>
 
     <string name="title_activity_player_select">Select Players</string>
+    <string name="game_select_insufficient_players">Don\'t forget to select multiple players</string>
     <string name="title_activity_game_select">Select Game</string>
 
     <string name="action_settings">Settings</string>
     <string name="boeren_bridge_title">Boeren Bridge</string>
+    <string name="player_select_return">Return</string>
 </resources>

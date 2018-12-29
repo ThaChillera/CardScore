@@ -16,7 +16,8 @@ public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
 
-    PlayerData playerData = PlayerData.getInstance();
+    private PlayerData playerData = PlayerData.getInstance();
+    private int[] selectedPlayers = playerData.getSelectedPlayerIds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,19 +33,19 @@ public class BoerenBridge extends AppCompatActivity {
         LayoutParams params = new LayoutParams((int) width, (int) height);
 
         //add players
-        grid.setColumnCount(playerData.getPlayerCount() + 1);
+        grid.setColumnCount(selectedPlayers.length + 1);
 
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();
-        for (int i = 0; i < playerData.getPlayerCount(); i++) {
+        for (int index: selectedPlayers) {
             //add gplayer headers
-            PlayerHeader playerHeader = new PlayerHeader(this, playerData.getPlayerName(i), i + 1);
+            PlayerHeader playerHeader = new PlayerHeader(this, playerData.getPlayerName(index));
             playerHeader.setLayoutParams(params);
             grid.addView(playerHeader);
             playerHeaders.add(playerHeader);
         }
 
         //add round + scores
-        int maxCards = 52 % playerData.getPlayerCount() == 0 ? (52 - playerData.getPlayerCount()) / playerData.getPlayerCount() : 52 / playerData.getPlayerCount();
+        int maxCards = 52 % selectedPlayers.length == 0 ? (52 - selectedPlayers.length) / selectedPlayers.length : 52 / selectedPlayers.length;
         int amountOfRounds = ((maxCards * 2)) - 1;
 
         GameScoreManager gameScoreManager = new GameScoreManager(amountOfRounds, playerHeaders);
@@ -60,7 +61,7 @@ public class BoerenBridge extends AppCompatActivity {
             grid.addView(rc);
 
             //add player round info
-            for (int i = 0; i < playerData.getPlayerCount(); i++) {
+            for (int i = 0; i < selectedPlayers.length; i++) {
                 ScoreCard sc = new ScoreCard(this,
                         gameScoreManager.getPredictionRoundScoreManager(rounds - 1),
                         gameScoreManager.getEnterRoundScoreManager(rounds - 1));
@@ -107,12 +108,12 @@ public class BoerenBridge extends AppCompatActivity {
         void enterScores(int[] scores, RoundScoreManagerType type) {
             for (int i = 0; i < scores.length; i++) {
                 if (type == RoundScoreManagerType.PREDICTIONS) {
-                    playerData.addPlayerPrediction(i, scores[i]);
+                    playerData.addPlayerPrediction(selectedPlayers[i], scores[i]);
                 } else {
-                    playerData.addPlayerScore(i, scores[i]);
+                    playerData.addPlayerScore(selectedPlayers[i], scores[i]);
                 }
 
-                playerHeaders.get(i).setPlayerScoreView(playerData.getPlayerScore(i));
+                playerHeaders.get(i).setPlayerScoreView(playerData.getPlayerScore(selectedPlayers[i]));
             }
         }
     }

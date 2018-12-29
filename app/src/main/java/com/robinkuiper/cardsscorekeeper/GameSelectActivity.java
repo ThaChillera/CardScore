@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.robinkuiper.cardsscorekeeper.boerenBridge.BoerenBridge;
 import com.robinkuiper.cardsscorekeeper.data.PlayerData;
 
 public class GameSelectActivity extends AppCompatActivity {
+    PlayerData playerData = PlayerData.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,15 +23,20 @@ public class GameSelectActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PlayerData.getInstance().loadPlayerData(this);
+        playerData.loadPlayerData(this);
     }
 
     public void onGameSelect(View v) {
-
+        if (playerData.getSelectedPlayerCount() > 1) {
+            Intent intent = new Intent(this, BoerenBridge.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(R.string.game_select_insufficient_players), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void selectPlayers(View v) {
         Intent intent = new Intent(this, PlayerSelectActivity.class);
-        startActivityForResult(intent, 0);
+        startActivity(intent);
     }
 }
