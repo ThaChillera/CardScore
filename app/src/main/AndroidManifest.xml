@@ -9,8 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".boerenBridge.BoerenBridge"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".boerenBridge.BoerenBridge"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PlayerSelectActivity"
+            android:label="@string/title_activity_player_select"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".GameSelectActivity"
+            android:label="@string/title_activity_game_select"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
