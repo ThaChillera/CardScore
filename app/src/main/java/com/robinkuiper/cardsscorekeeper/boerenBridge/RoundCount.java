@@ -161,7 +161,7 @@ public class RoundCount extends RelativeLayout {
             for (int i = STARTINGPLAYER; i < PLAYERS.size() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
-                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(1);
+                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3 );
 
                 //verify input
                 int input;
