@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.robinkuiper.cardsscorekeeper.data.PlayerData;
+
 public class GameSelectActivity extends AppCompatActivity {
 
     @Override
@@ -19,6 +21,7 @@ public class GameSelectActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        PlayerData.getInstance().loadPlayerData(this);
     }
 
     public void onGameSelect(View v) {
