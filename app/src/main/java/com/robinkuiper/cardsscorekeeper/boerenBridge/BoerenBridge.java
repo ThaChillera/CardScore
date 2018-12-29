@@ -83,7 +83,7 @@ public class BoerenBridge extends AppCompatActivity {
             RoundCount rc = new RoundCount(this,
                     gameScoreManager.getPredictionRoundScoreManager(rounds - 1),
                     gameScoreManager.getEnterRoundScoreManager(rounds - 1),
-                    players.size(), rounds, cardCount);
+                    players, rounds, cardCount);
             rc.setLayoutParams(params);
             grid.addView(rc);
 

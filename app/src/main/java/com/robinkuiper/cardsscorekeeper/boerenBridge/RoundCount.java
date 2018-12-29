@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.InputType;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,17 +16,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.data.Player;
+
+import java.util.ArrayList;
 
 public class RoundCount extends RelativeLayout {
+    final private String TAG = "RoundCount";
+    final private Context CONTEXT;
+    final private  ArrayList<Player> PLAYERS;
+    final int STARTINGPLAYER;
 
-    public RoundCount(Context context, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int playerCount, int roundNumber, int cardCount) {
-        super(context);
+    public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, ArrayList<Player> PLAYERS, int roundNumber, int cardCount) {
+        super(CONTEXT);
+        this.CONTEXT = CONTEXT;
+        this.PLAYERS = PLAYERS;
+        this.STARTINGPLAYER = (roundNumber -1) % PLAYERS.size();
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_roundcount, this);
 
         TextView roundNumberView = findViewById(R.id.roundcount_boerenbridge_roundnumber);
@@ -36,30 +49,34 @@ public class RoundCount extends RelativeLayout {
         Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
         Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
 
-        predictScore.setOnClickListener(new ButtonOnClickListener(context, predictedRoundScoreManager, playerCount, predictScore, enterScore));
-        enterScore.setOnClickListener(new ButtonOnClickListener(context, enteredRoundScoreManager, playerCount, enterScore, null));
+        predictScore.setOnClickListener(new ButtonOnClickListener(predictedRoundScoreManager, predictScore, enterScore));
+        enterScore.setOnClickListener(new ButtonOnClickListener(enteredRoundScoreManager, enterScore, null));
+    }
+
+    private int getPlayerIndex(int i) {
+        if (i >= PLAYERS.size()) {
+            return i - PLAYERS.size();
+        } else {
+            return i;
+        }
     }
 
     private class ButtonOnClickListener implements OnClickListener {
-        Context context;
         BoerenBridge.RoundScoreManager roundScoreManager;
-        int playerCount;
         Button buttonOld, buttonNew;
 
-        ButtonOnClickListener(Context context, BoerenBridge.RoundScoreManager roundScoreManager, int playerCount, Button buttonOld, Button buttonNew) {
-            this.context = context;
+        ButtonOnClickListener(BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
             this.roundScoreManager = roundScoreManager;
-            this.playerCount = playerCount;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
         }
 
         @Override
         public void onClick(View v) {
-            final LinearLayout linearLayout = new LinearLayout(context);
+            final LinearLayout linearLayout = new LinearLayout(CONTEXT);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
+            AlertDialog.Builder builder = new AlertDialog.Builder(CONTEXT)
                     .setView(linearLayout);
 
             if (buttonNew != null) {
@@ -69,7 +86,7 @@ public class RoundCount extends RelativeLayout {
             }
 
             // Add the buttons
-            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, context, roundScoreManager, buttonOld, buttonNew))
+            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, roundScoreManager, buttonOld, buttonNew))
                     .setNegativeButton(R.string.cancel, null);
 
             final AlertDialog dialog = builder.show();
@@ -77,31 +94,59 @@ public class RoundCount extends RelativeLayout {
             dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
             //for each player, add input to layout
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 25);
+            //order is based on who starts this round, player who starts is at the top
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
+            LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
-            for (int i = 0; i < playerCount; i++) {
-                EditText input = new EditText(context);
+            for (int i = STARTINGPLAYER; i < PLAYERS.size() + STARTINGPLAYER; i++) {
+                int index = getPlayerIndex(i);
+
+                LinearLayout innerLayout = new LinearLayout(CONTEXT);
+                innerLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+                Space space = new Space(CONTEXT);
+                space.setLayoutParams(spaceParams);
+
+                innerLayout.addView(getSpace());
+
+                TextView nameTextView = new TextView(CONTEXT);
+                nameTextView.setText(PLAYERS.get(index).getName());
+                nameTextView.setGravity(Gravity.CENTER);
+                nameTextView.setLayoutParams(params);
+
+                innerLayout.addView(nameTextView);
+                innerLayout.addView(getSpace());
+
+                EditText input = new EditText(CONTEXT);
 
                 input.setLayoutParams(params);
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 input.setOnFocusChangeListener(new InputOnFocusChangeListener(dialog));
-                input.setOnEditorActionListener(new InputOnEditorActionListener(i == playerCount -1, dialog));
+                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == PLAYERS.size() - 1, dialog));
 
-                linearLayout.addView(input);
+                innerLayout.addView(input);
+                innerLayout.addView(getSpace());
+
+                linearLayout.addView(innerLayout);
             }
+        }
+
+        private Space getSpace() {
+            Space space = new Space(CONTEXT);
+            space.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+
+            return space;
         }
     }
 
     private class DialogPositiveOnClickListener implements DialogInterface.OnClickListener {
         LinearLayout linearLayout;
-        Context context;
         BoerenBridge.RoundScoreManager roundScoreManager;
         Button buttonOld, buttonNew;
 
-        public DialogPositiveOnClickListener(LinearLayout linearLayout, Context context, BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
+        public DialogPositiveOnClickListener(LinearLayout linearLayout, BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
             this.linearLayout = linearLayout;
-            this.context = context;
             this.roundScoreManager = roundScoreManager;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
@@ -110,22 +155,25 @@ public class RoundCount extends RelativeLayout {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // User clicked OK button
-            int[] inputs = new int[linearLayout.getChildCount()];
+            int[] inputs = new int[PLAYERS.size()];
 
-            for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                EditText editText = (EditText) linearLayout.getChildAt(i);
+            //starts at STARTINGPLAYER, since input list starts at STARTINGPLAYER
+            for (int i = STARTINGPLAYER; i < PLAYERS.size() + STARTINGPLAYER; i++) {
+                int index = getPlayerIndex(i);
+
+                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(1);
 
                 //verify input
                 int input;
                 try {
                     input = Integer.parseInt(editText.getText().toString());
                 } catch (NumberFormatException nfe) {
-                    Toast toast = Toast.makeText(context, "Invalid input", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(CONTEXT, "Invalid input", Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
 
-                inputs[i] = input;
+                inputs[index] = input;
             }
 
             //return values
