@@ -13,17 +13,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class PlayerData {
+public class PlayerManager {
     private static final String PLAYERDATALOCATION = "playerdata.json";
-    private static final PlayerData ourInstance = new PlayerData();
+    private static final PlayerManager ourInstance = new PlayerManager();
     private ArrayList<Player> players;
     private boolean[] selectedPlayers;
 
-    public static PlayerData getInstance() {
+    public static PlayerManager getInstance() {
         return ourInstance;
     }
 
-    private PlayerData() {
+    private PlayerManager() {
     }
 
     public int getPlayerCount() {
@@ -59,6 +59,10 @@ public class PlayerData {
         return players.get(playerId).getName();
     }
 
+    public String getPlayerShortName(int playerId) {
+        return players.get(playerId).getShortName();
+    }
+
     public int getPlayerScore(int playerId) {
         return players.get(playerId).getScore();
     }
@@ -69,6 +73,18 @@ public class PlayerData {
 
     public void addPlayerScore(int playerId, int score) {
         players.get(playerId).addScore(score);
+    }
+
+    public void addPlayer(String name, String shortName) {
+        players.add(new Player(name, shortName));
+    }
+
+    public void editPlayer(int playerId, String name, String shortName) {
+        players.get(playerId).editPlayer(name, shortName);
+    }
+
+    public void deletePlayer(int playerId) {
+        players.remove(playerId);
     }
 
     public void selectPlayer(int playerId, boolean selected) {
@@ -101,7 +117,7 @@ public class PlayerData {
             outputStream.close();
 
         } catch (IOException exception) {
-            Toast.makeText(context, "PlayerData failed to save, some info could be lost", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "PlayerManager failed to save, some info could be lost", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -20,13 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.PlayerData;
+import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
 
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
-    final private PlayerData playerData = PlayerData.getInstance();
-    final private int[] selectedPlayers = playerData.getSelectedPlayerIds();
+    final private PlayerManager playerManager = PlayerManager.getInstance();
+    final private int[] selectedPlayers = playerManager.getSelectedPlayerIds();
     final int STARTINGPLAYER;
 
     public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
@@ -107,7 +107,7 @@ public class RoundCount extends RelativeLayout {
                 innerLayout.addView(getSpace());
 
                 TextView nameTextView = new TextView(CONTEXT);
-                nameTextView.setText(playerData.getPlayerName(selectedPlayers[index]));
+                nameTextView.setText(playerManager.getPlayerName(selectedPlayers[index]));
                 nameTextView.setGravity(Gravity.CENTER);
                 nameTextView.setLayoutParams(params);
 

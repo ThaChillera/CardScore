@@ -8,7 +8,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.PlayerData;
+import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
 
 import java.util.ArrayList;
 
@@ -16,8 +16,8 @@ public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
 
-    private PlayerData playerData = PlayerData.getInstance();
-    private int[] selectedPlayers = playerData.getSelectedPlayerIds();
+    private PlayerManager playerManager = PlayerManager.getInstance();
+    private int[] selectedPlayers = playerManager.getSelectedPlayerIds();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class BoerenBridge extends AppCompatActivity {
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();
         for (int index: selectedPlayers) {
             //add gplayer headers
-            PlayerHeader playerHeader = new PlayerHeader(this, playerData.getPlayerName(index));
+            PlayerHeader playerHeader = new PlayerHeader(this, playerManager.getPlayerName(index));
             playerHeader.setLayoutParams(params);
             grid.addView(playerHeader);
             playerHeaders.add(playerHeader);
@@ -75,7 +75,7 @@ public class BoerenBridge extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
 
-        PlayerData.getInstance().savePlayerData(this);
+        PlayerManager.getInstance().savePlayerData(this);
     }
 
     enum RoundScoreManagerType {
@@ -108,12 +108,12 @@ public class BoerenBridge extends AppCompatActivity {
         void enterScores(int[] scores, RoundScoreManagerType type) {
             for (int i = 0; i < scores.length; i++) {
                 if (type == RoundScoreManagerType.PREDICTIONS) {
-                    playerData.addPlayerPrediction(selectedPlayers[i], scores[i]);
+                    playerManager.addPlayerPrediction(selectedPlayers[i], scores[i]);
                 } else {
-                    playerData.addPlayerScore(selectedPlayers[i], scores[i]);
+                    playerManager.addPlayerScore(selectedPlayers[i], scores[i]);
                 }
 
-                playerHeaders.get(i).setPlayerScoreView(playerData.getPlayerScore(selectedPlayers[i]));
+                playerHeaders.get(i).setPlayerScoreView(playerManager.getPlayerScore(selectedPlayers[i]));
             }
         }
     }

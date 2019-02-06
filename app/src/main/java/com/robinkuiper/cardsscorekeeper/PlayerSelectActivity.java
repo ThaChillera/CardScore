@@ -9,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.Toast;
 
-import com.robinkuiper.cardsscorekeeper.data.PlayerData;
+import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
 
 public class PlayerSelectActivity extends AppCompatActivity {
-    PlayerData playerData = PlayerData.getInstance();
+    PlayerManager playerManager = PlayerManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,14 +35,24 @@ public class PlayerSelectActivity extends AppCompatActivity {
         LinearLayout linearLayout = findViewById(R.id.content_playerselect_linearlayout);
         LinearLayout.LayoutParams checkBoxParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
 
-        for (int i = 0; i < playerData.getPlayerCount(); i++) {
+        for (int i = 0; i < playerManager.getPlayerCount(); i++) {
             CheckBox button = new CheckBox(getApplicationContext());
-            button.setText(playerData.getPlayerName(i));
+            button.setText(playerManager.getPlayerName(i));
             button.setLayoutParams(checkBoxParams);
             button.setOnClickListener(new CheckBoxOnClickListener(i));
+            button.setOnLongClickListener(new CheckBoxOnLongClickListener());
 
             linearLayout.addView(button);
         }
+    }
+
+    public void onClickReturnClick(View v) {
+        finish();
+    }
+
+    public void onClickCreatePlayer(View v) {
+        //person editing view
+        //
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {
@@ -56,11 +65,16 @@ public class PlayerSelectActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             CheckBox box = (CheckBox) v;
-            playerData.selectPlayer(ID, box.isChecked());
+            playerManager.selectPlayer(ID, box.isChecked());
         }
     }
 
-    public void onReturnClick(View v) {
-        finish();
+    private class CheckBoxOnLongClickListener implements View.OnLongClickListener {
+
+        @Override
+        public boolean onLongClick(View v) {
+            Toast.makeText(getApplicationContext(), "onHold", Toast.LENGTH_LONG).show();
+            return true;
+        }
     }
 }

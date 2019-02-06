@@ -15,8 +15,7 @@
         <activity
             android:name=".PlayerSelectActivity"
             android:label="@string/title_activity_player_select"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".GameSelectActivity"
             android:label="@string/title_activity_game_select"
@@ -27,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".data.EditPlayerActivity"></activity>
     </application>
 
 </manifest>

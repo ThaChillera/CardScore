@@ -4,21 +4,25 @@ import java.util.ArrayList;
 
 class Player {
     private String name;
-    private int wins;
-    private int losses;
+    private String shortName;
+    private int wins = 0;
+    private int losses = 0;
 
     //scores for current game
     private ArrayList<Integer> predictedScores = new ArrayList<>();
     private ArrayList<Integer> enteredScores = new ArrayList<>();
 
-    Player(String name) {
+    Player(String name, String shortName) {
         this.name = name;
-        wins = 0;
-        losses = 0;
+        this.shortName = shortName;
     }
 
     String getName() {
         return name;
+    }
+
+    String getShortName() {
+        return shortName;
     }
 
     void addPrediction(int score) {
@@ -40,6 +44,11 @@ class Player {
         }
 
         return score;
+    }
+
+    void editPlayer(String name, String shortName) {
+        this.name = name;
+        this.shortName = shortName;
     }
 
     void reset() {
