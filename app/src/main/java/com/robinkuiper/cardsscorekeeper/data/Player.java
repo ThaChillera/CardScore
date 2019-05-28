@@ -3,8 +3,10 @@ package com.robinkuiper.cardsscorekeeper.data;
 import java.util.ArrayList;
 
 class Player {
+    private int id;
     private String name;
     private String shortName;
+
     private int wins = 0;
     private int losses = 0;
 

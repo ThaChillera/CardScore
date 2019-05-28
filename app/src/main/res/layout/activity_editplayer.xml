@@ -49,7 +49,7 @@
 
 
     <Button
-        android:id="@+id/editPlayer_button1"
+        android:id="@+id/editPlayer_deletePlayer"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -57,12 +57,12 @@
         android:onClick="onClickDeletePlayer"
         android:text="@string/delete"
         android:textColor="@color/text"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editPlayer_button2"
-        app:layout_constraintEnd_toStartOf="@+id/editPlayer_button2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editPlayer_savePlayer"
+        app:layout_constraintEnd_toStartOf="@+id/editPlayer_savePlayer"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/editPlayer_button2"
+        android:id="@+id/editPlayer_savePlayer"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="192dp"
         android:layout_height="wrap_content"

@@ -41,7 +41,7 @@ public class PlayerManager {
         return selectedCount;
     }
 
-    public int[] getSelectedPlayerIds() {
+    public int[] getSelectedPllayerIds() {
         int[] returnValues = new int[getSelectedPlayerCount()];
         int position = 0;
 
