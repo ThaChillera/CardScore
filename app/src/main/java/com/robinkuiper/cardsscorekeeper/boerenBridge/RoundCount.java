@@ -27,12 +27,14 @@ public class RoundCount extends RelativeLayout {
     final private Context CONTEXT;
     final private PlayerManager playerManager = PlayerManager.getInstance();
     final private int[] selectedPlayers = playerManager.getSelectedPlayerIds();
+
     final int STARTINGPLAYER;
 
     public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
         this.STARTINGPLAYER = (roundNumber -1) % selectedPlayers.length;
+
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_roundcount, this);
