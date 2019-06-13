@@ -99,6 +99,7 @@ public class PlayerManager {
             players = new ArrayList<>(Arrays.asList(new Gson().fromJson(new InputStreamReader(inputStream), Player[].class)));
 
         } catch (IOException exception) {
+            Toast.makeText(context, "PlayerManager failed to load, some info could be lost", Toast.LENGTH_LONG).show();
             players = new ArrayList<>();
         }
 

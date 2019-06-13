@@ -44,6 +44,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="@string/name_short"
+        android:maxLength="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -72,9 +72,8 @@ public class BoerenBridge extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
+    public void finish() {
+        super.finish();
         PlayerManager.getInstance().savePlayerData(this);
     }
 

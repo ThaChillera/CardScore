@@ -53,6 +53,9 @@ public class EditPlayerActivity extends AppCompatActivity {
         } else if (shortName.getText().length() == 0) {
             //no shortname
             Toast.makeText(this, getResources().getString(R.string.editPlayer_missing_shortname), Toast.LENGTH_SHORT).show();
+        } else if (shortName.getText().length() > 3) {
+            //shortname too long
+            Toast.makeText(this, "Shortname may only be maximum 3 characters", Toast.LENGTH_SHORT).show();
         } else {
             if (playerId == -1) {
                 //save & finish

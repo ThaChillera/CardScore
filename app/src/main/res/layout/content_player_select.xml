@@ -8,16 +8,11 @@
     tools:context=".PlayerSelectActivity"
     tools:showIn="@layout/activity_player_select">
 
-    <ScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/playerselect_playerlist"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/content_playerselect_linearlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        android:layout_height="match_parent" />
 
     <Button
         android:layout_width="match_parent"
