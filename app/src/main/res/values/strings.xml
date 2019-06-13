@@ -16,8 +16,12 @@
     <string name="action_settings">Settings</string>
     <string name="boeren_bridge_title">Boeren Bridge</string>
     <string name="player_select_return">Return</string>
+
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="name_short">Name Short</string>
     <string name="name">Name</string>
+
+    <string name="editPlayer_missing_name">No name entered!</string>
+    <string name="editPlayer_missing_shortname">No short name entered!</string>
 </resources>

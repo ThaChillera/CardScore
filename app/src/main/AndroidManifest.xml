@@ -15,7 +15,7 @@
         <activity
             android:name=".PlayerSelectActivity"
             android:label="@string/title_activity_player_select"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".GameSelectActivity"
             android:label="@string/title_activity_game_select"

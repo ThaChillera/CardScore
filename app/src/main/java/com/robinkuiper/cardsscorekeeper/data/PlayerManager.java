@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.robinkuiper.cardsscorekeeper.BuildConfig;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,7 +18,7 @@ public class PlayerManager {
     private static final String PLAYERDATALOCATION = "playerdata.json";
     private static final PlayerManager ourInstance = new PlayerManager();
     private ArrayList<Player> players;
-    private boolean[] selectedPlayers;
+    private ArrayList<Integer> selectedPlayers = new ArrayList<>();
 
     public static PlayerManager getInstance() {
         return ourInstance;
@@ -31,25 +32,14 @@ public class PlayerManager {
     }
 
     public int getSelectedPlayerCount() {
-        int selectedCount = 0;
-        for (int i = 0; i < selectedPlayers.length; i++) {
-            if (selectedPlayers[i]) {
-                ++selectedCount;
-            }
-        }
-
-        return selectedCount;
+        return selectedPlayers.size();
     }
 
-    public int[] getSelectedPlayerIds() {
+    public int[] getSelectedPlayers() {
         int[] returnValues = new int[getSelectedPlayerCount()];
-        int position = 0;
 
-        for (int i = 0; i < selectedPlayers.length; i++) {
-            if (selectedPlayers[i]) {
-                returnValues[position] = i;
-                ++position;
-            }
+        for (int i = 0; i < selectedPlayers.size(); i++) {
+            returnValues[i] = selectedPlayers.get(i);
         }
 
         return returnValues;
@@ -87,8 +77,20 @@ public class PlayerManager {
         players.remove(playerId);
     }
 
-    public void selectPlayer(int playerId, boolean selected) {
-        selectedPlayers[playerId] = selected;
+    public void selectPlayer(int playerId) {
+        if (!isPlayerSelected(playerId)) {
+            selectedPlayers.add(playerId);
+        }
+    }
+
+    public void deselectPlayer(int playerId) {
+        if (isPlayerSelected(playerId)) {
+            selectedPlayers.remove((Integer) playerId);
+        }
+    }
+
+    public boolean isPlayerSelected(int playerId) {
+        return selectedPlayers.contains(playerId);
     }
 
     public void loadPlayerData(Context context) {
@@ -100,7 +102,11 @@ public class PlayerManager {
             players = new ArrayList<>();
         }
 
-        selectedPlayers = new boolean[getPlayerCount()];
+        //Junk Players
+        if (BuildConfig.DEBUG && players.isEmpty()) {
+            addPlayer("Test Player 1", "Test1");
+            addPlayer("Test PLayer 2", "Test2");
+        }
     }
 
     public void savePlayerData(Context context) {

@@ -17,7 +17,7 @@ public class BoerenBridge extends AppCompatActivity {
     final private String TAG = "BoerenBridge";
 
     private PlayerManager playerManager = PlayerManager.getInstance();
-    private int[] selectedPlayers = playerManager.getSelectedPlayerIds();
+    private int[] selectedPlayers = playerManager.getSelectedPlayers();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -26,7 +26,7 @@ public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
     final private PlayerManager playerManager = PlayerManager.getInstance();
-    final private int[] selectedPlayers = playerManager.getSelectedPlayerIds();
+    final private int[] selectedPlayers = playerManager.getSelectedPlayers();
 
     final int STARTINGPLAYER;
 

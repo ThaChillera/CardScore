@@ -1,16 +1,16 @@
 package com.robinkuiper.cardsscorekeeper;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.robinkuiper.cardsscorekeeper.data.EditPlayerActivity;
 import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
 
 public class PlayerSelectActivity extends AppCompatActivity {
@@ -20,30 +20,27 @@ public class PlayerSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_select);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.playerselect_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         LinearLayout linearLayout = findViewById(R.id.content_playerselect_linearlayout);
         LinearLayout.LayoutParams checkBoxParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1);
 
         for (int i = 0; i < playerManager.getPlayerCount(); i++) {
             CheckBox button = new CheckBox(getApplicationContext());
+            button.setChecked(playerManager.isPlayerSelected(i));
             button.setText(playerManager.getPlayerName(i));
             button.setLayoutParams(checkBoxParams);
             button.setOnClickListener(new CheckBoxOnClickListener(i));
-            button.setOnLongClickListener(new CheckBoxOnLongClickListener());
+            button.setOnLongClickListener(new CheckBoxOnLongClickListener(i, this));
 
             linearLayout.addView(button);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void onClickReturnClick(View v) {
@@ -51,8 +48,8 @@ public class PlayerSelectActivity extends AppCompatActivity {
     }
 
     public void onClickCreatePlayer(View v) {
-        //person editing view
-        //
+        Intent intent = new Intent(this, EditPlayerActivity.class);
+        startActivity(intent);
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {
@@ -65,15 +62,28 @@ public class PlayerSelectActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             CheckBox box = (CheckBox) v;
-            playerManager.selectPlayer(ID, box.isChecked());
+            if (box.isChecked()) {
+                playerManager.selectPlayer(ID);
+            } else {
+                playerManager.deselectPlayer(ID);
+            }
         }
     }
 
     private class CheckBoxOnLongClickListener implements View.OnLongClickListener {
+        final int ID;
+        final Activity ACTIVITY;
+
+        public CheckBoxOnLongClickListener(int ID, Activity ACTIVITY) {
+            this.ID = ID;
+            this.ACTIVITY = ACTIVITY;
+        }
 
         @Override
         public boolean onLongClick(View v) {
-            Toast.makeText(getApplicationContext(), "onHold", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(ACTIVITY, EditPlayerActivity.class);
+            intent.putExtra(EditPlayerActivity.PLAYERIDEXTRA, ID);
+            startActivity(intent);
             return true;
         }
     }
