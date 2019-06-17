@@ -27,7 +27,7 @@ public class PlayerManager {
     private PlayerManager() {
     }
 
-    public int getPlayerCount() {
+    public int getAllPlayersCount() {
         return players.size();
     }
 

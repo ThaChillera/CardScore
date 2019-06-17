@@ -39,7 +39,7 @@ public class RoundCount extends RelativeLayout {
     public RoundCount(Context CONTEXT, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
-        this.STARTINGPLAYER = (roundNumber -1) % playerManager.getPlayerCount();
+        this.STARTINGPLAYER = (roundNumber -1) % playerManager.getSelectedPlayerCount();
 
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -59,8 +59,8 @@ public class RoundCount extends RelativeLayout {
     }
 
     private int getPlayerIndex(int i) {
-        if (i >= playerManager.getPlayerCount()) {
-            return i - playerManager.getPlayerCount();
+        if (i >= playerManager.getSelectedPlayerCount()) {
+            return i - playerManager.getSelectedPlayerCount();
         } else {
             return i;
         }
@@ -109,7 +109,7 @@ public class RoundCount extends RelativeLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
             LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
-            for (int i = STARTINGPLAYER; i < playerManager.getPlayerCount() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerManager.getSelectedPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
@@ -134,7 +134,7 @@ public class RoundCount extends RelativeLayout {
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 input.setOnFocusChangeListener(new InputOnFocusChangeListener(dialog));
-                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == playerManager.getPlayerCount() - 1, dialog));
+                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == playerManager.getSelectedPlayerCount() - 1, dialog));
 
                 innerLayout.addView(input);
                 innerLayout.addView(getSpace());
@@ -172,10 +172,10 @@ public class RoundCount extends RelativeLayout {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // User clicked OK button
-            int[] inputs = new int[playerManager.getPlayerCount()];
+            int[] inputs = new int[playerManager.getSelectedPlayerCount()];
 
             //starts at STARTINGPLAYER, since input list starts at STARTINGPLAYER
-            for (int i = STARTINGPLAYER; i < playerManager.getPlayerCount() + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerManager.getSelectedPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3);
@@ -193,10 +193,26 @@ public class RoundCount extends RelativeLayout {
                 inputs[index] = input;
             }
 
+            //validate results
+            int totalValue = 0;
+            for (int value: inputs) {
+                if (value < 0) {
+                    Toast toast = Toast.makeText(CONTEXT, CONTEXT.getResources().getString(R.string.invalid_number), Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                totalValue += value;
+            }
+            if (gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.SCORE && totalValue != gameScoreManager.getCardCount(gameScoreManager.getRound())) {
+                Toast toast = Toast.makeText(CONTEXT, CONTEXT.getResources().getString(R.string.invalid_score), Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             //save results
             //todo: save playerID with input field for better code quality
             Map<Integer, Integer> inputMap = new HashMap<>();
-            for (int i = 0; i < playerManager.getPlayerCount(); i++) {
+            for (int i = 0; i < playerManager.getSelectedPlayerCount(); i++) {
                 inputMap.put(playerManager.getSelectedPlayers()[i], inputs[i]);
             }
 

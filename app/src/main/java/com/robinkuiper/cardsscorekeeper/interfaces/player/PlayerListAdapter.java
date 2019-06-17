@@ -54,7 +54,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
 
     @Override
     public int getItemCount() {
-        return PLAYERMANAGER.getPlayerCount();
+        return PLAYERMANAGER.getAllPlayersCount();
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {

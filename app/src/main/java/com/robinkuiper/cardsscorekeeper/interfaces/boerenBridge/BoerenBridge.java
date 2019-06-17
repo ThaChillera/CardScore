@@ -22,7 +22,7 @@ public class BoerenBridge extends AppCompatActivity {
     final private String TAG = "BoerenBridge";
 
     private final PlayerManager playerManager = PlayerManager.getInstance();
-    private final GameScoreManager gameScoreManager = new GameScoreManager(playerManager.getPlayerCount());
+    private final GameScoreManager gameScoreManager = new GameScoreManager(playerManager.getSelectedPlayerCount());
 
     private HeaderManager headerManager;
 
@@ -40,7 +40,7 @@ public class BoerenBridge extends AppCompatActivity {
         LayoutParams params = new LayoutParams((int) width, (int) height);
 
         //add players
-        grid.setColumnCount(playerManager.getPlayerCount() + 1);
+        grid.setColumnCount(playerManager.getSelectedPlayerCount() + 1);
 
         //add player headers
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();

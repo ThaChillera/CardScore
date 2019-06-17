@@ -25,7 +25,7 @@ public class ReadOnlyGameScoreManager {
     ReadOnlyGameScoreManager(int playerCount) {
         this.playerCount = playerCount;
 
-        maxCards = 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
+        maxCards = 3;// 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
         amountOfRounds = ((maxCards * 2)) - 1;
     }
 
@@ -39,6 +39,16 @@ public class ReadOnlyGameScoreManager {
 
     public int getAmountOfRounds() {
         return amountOfRounds;
+    }
+
+    /**
+     * get card count for given round
+     * @param round zero-based round number
+     * @return card count
+     */
+    public int getCardCount(int round) {
+        round += 1;
+        return round <= maxCards ? round : maxCards - (round - maxCards);
     }
 
     public Map<Integer, Integer> getPredictions(int round) {

@@ -21,14 +21,30 @@ class RoundData {
         this.scores = new HashMap<>();
         this.results = new HashMap<>();
 
-        //todo: validate prediction input
+        //validate prediction input
+        for (int value: predictions.values()) {
+            if (value < 0) {
+                throw new IllegalArgumentException("Impossible prediction");
+            }
+        }
+
         for (int playerID: predictions.keySet()) {
             this.predictions.put(playerID, predictions.get(playerID));
         }
     }
 
     FinishedRound addScores(Map<Integer, Integer> scores) {
-        //todo: validate input
+        //validate input
+        int totalScore = 0;
+        for (int value: scores.values()) {
+            if (value < 0) {
+                throw new IllegalArgumentException("Impossible score");
+            }
+            totalScore += value;
+        }
+        if (totalScore != cardCount)
+            throw new IllegalArgumentException("Incorrectly entered score");
+
         for (int playerID: scores.keySet()) {
             this.scores.put(playerID, scores.get(playerID));
         }

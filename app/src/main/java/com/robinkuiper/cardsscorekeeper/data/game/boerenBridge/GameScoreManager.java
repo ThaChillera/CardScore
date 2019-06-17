@@ -34,7 +34,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
             throw new IllegalStateException("previous round not complete");
         }
 
-        predictedRound = new PredictedRound(playerCount, round, predictions);
+        predictedRound = new PredictedRound(playerCount, getCardCount(round), predictions);
     }
 
     /**

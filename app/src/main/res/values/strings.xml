@@ -6,6 +6,9 @@
     <string name="prediction">Prediction:</string>
     <string name="score">Score:</string>
 
+    <string name="invalid_number">Numbers cannot be less than 0</string>
+    <string name="invalid_score">Entered number don\'t add up to the expected card count</string>
+
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
