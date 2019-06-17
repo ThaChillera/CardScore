@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper;
+package com.robinkuiper.cardsscorekeeper.interfaces.player;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,8 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import com.robinkuiper.cardsscorekeeper.data.EditPlayerActivity;
-import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.MyViewHolder>  {
     private final PlayerManager PLAYERMANAGER = PlayerManager.getInstance();

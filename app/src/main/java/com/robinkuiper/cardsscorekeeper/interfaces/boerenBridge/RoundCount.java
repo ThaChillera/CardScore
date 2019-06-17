@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper.boerenBridge;
+package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,7 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.RoundScoreManager;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
@@ -30,7 +31,7 @@ public class RoundCount extends RelativeLayout {
 
     final int STARTINGPLAYER;
 
-    public RoundCount(Context CONTEXT, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
+    public RoundCount(Context CONTEXT, RoundScoreManager predictedRoundScoreManager, RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
         this.STARTINGPLAYER = (roundNumber -1) % selectedPlayers.length;
@@ -61,10 +62,10 @@ public class RoundCount extends RelativeLayout {
     }
 
     private class ButtonOnClickListener implements OnClickListener {
-        BoerenBridge.RoundScoreManager roundScoreManager;
+        RoundScoreManager roundScoreManager;
         Button buttonOld, buttonNew;
 
-        ButtonOnClickListener(BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
+        ButtonOnClickListener(RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
             this.roundScoreManager = roundScoreManager;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
@@ -141,10 +142,10 @@ public class RoundCount extends RelativeLayout {
 
     private class DialogPositiveOnClickListener implements DialogInterface.OnClickListener {
         LinearLayout linearLayout;
-        BoerenBridge.RoundScoreManager roundScoreManager;
+        RoundScoreManager roundScoreManager;
         Button buttonOld, buttonNew;
 
-        public DialogPositiveOnClickListener(LinearLayout linearLayout, BoerenBridge.RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
+        public DialogPositiveOnClickListener(LinearLayout linearLayout, RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
             this.linearLayout = linearLayout;
             this.roundScoreManager = roundScoreManager;
             this.buttonOld = buttonOld;

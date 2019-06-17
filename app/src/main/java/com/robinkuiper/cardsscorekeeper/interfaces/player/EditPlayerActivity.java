@@ -1,6 +1,5 @@
-package com.robinkuiper.cardsscorekeeper.data;
+package com.robinkuiper.cardsscorekeeper.interfaces.player;
 
-import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 
 public class EditPlayerActivity extends AppCompatActivity {
     public static final String PLAYERIDEXTRA = "PLAYERID";

@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper.boerenBridge;
+package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 
 import android.content.Context;
 import android.view.LayoutInflater;

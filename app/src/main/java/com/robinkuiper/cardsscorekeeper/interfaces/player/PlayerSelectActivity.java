@@ -1,22 +1,15 @@
-package com.robinkuiper.cardsscorekeeper;
+package com.robinkuiper.cardsscorekeeper.interfaces.player;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.robinkuiper.cardsscorekeeper.data.EditPlayerActivity;
-import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 
 public class PlayerSelectActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;

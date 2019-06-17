@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper.data;
+package com.robinkuiper.cardsscorekeeper.data.players;
 
 import android.content.Context;
 import android.widget.Toast;

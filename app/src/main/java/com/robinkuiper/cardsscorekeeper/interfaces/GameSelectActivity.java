@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper;
+package com.robinkuiper.cardsscorekeeper.interfaces;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
-import com.robinkuiper.cardsscorekeeper.boerenBridge.BoerenBridge;
-import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.player.PlayerSelectActivity;
 
 public class GameSelectActivity extends AppCompatActivity {
     PlayerManager playerManager = PlayerManager.getInstance();
@@ -17,7 +19,7 @@ public class GameSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameselect);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         playerManager.loadPlayerData(this);

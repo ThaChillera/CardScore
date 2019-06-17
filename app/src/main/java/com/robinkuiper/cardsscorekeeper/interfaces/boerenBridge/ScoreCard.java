@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper.boerenBridge;
+package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,13 +6,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.RoundScoreManager;
 
 public class ScoreCard extends LinearLayout {
     final String TAG = "ScoreCard";
 
     TextView predictedRoundsView, scoredRoundsView;
 
-    public ScoreCard(Context context, BoerenBridge.RoundScoreManager predictedRoundScoreManager, BoerenBridge.RoundScoreManager enteredRoundScoreManager) {
+    public ScoreCard(Context context, RoundScoreManager predictedRoundScoreManager, RoundScoreManager enteredRoundScoreManager) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

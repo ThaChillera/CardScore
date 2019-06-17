@@ -10,14 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".boerenBridge.BoerenBridge"
+            android:name=".interfaces.boerenBridge.BoerenBridge"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".PlayerSelectActivity"
+            android:name=".interfaces.player.PlayerSelectActivity"
             android:label="@string/title_activity_player_select"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".GameSelectActivity"
+            android:name=".interfaces.GameSelectActivity"
             android:label="@string/title_activity_game_select"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".data.EditPlayerActivity"></activity>
+        <activity android:name=".interfaces.player.EditPlayerActivity"></activity>
     </application>
 
 </manifest>

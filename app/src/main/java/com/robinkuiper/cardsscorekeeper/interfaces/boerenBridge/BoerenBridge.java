@@ -1,14 +1,13 @@
-package com.robinkuiper.cardsscorekeeper.boerenBridge;
+package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
-import android.widget.TextView;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 
 import java.util.ArrayList;
 
@@ -75,67 +74,5 @@ public class BoerenBridge extends AppCompatActivity {
     public void finish() {
         super.finish();
         PlayerManager.getInstance().savePlayerData(this);
-    }
-
-    enum RoundScoreManagerType {
-        PREDICTIONS, SCORES
-    }
-
-    class GameScoreManager {
-        private RoundScoreManager[] predictions, scores;
-        private ArrayList<PlayerHeader> playerHeaders;
-
-        GameScoreManager(int rounds, ArrayList<PlayerHeader> playerHeaders) {
-            this.playerHeaders = playerHeaders;
-            predictions = new RoundScoreManager[rounds];
-            scores = new RoundScoreManager[rounds];
-
-            for (int i = 0; i < rounds; i++) {
-                predictions[i] = new RoundScoreManager(this, RoundScoreManagerType.PREDICTIONS);
-                scores[i] = new RoundScoreManager(this, RoundScoreManagerType.SCORES);
-            }
-        }
-
-        RoundScoreManager getPredictionRoundScoreManager(int i) {
-            return predictions[i];
-        }
-
-        RoundScoreManager getEnterRoundScoreManager(int i) {
-            return scores[i];
-        }
-
-        void enterScores(int[] scores, RoundScoreManagerType type) {
-            for (int i = 0; i < scores.length; i++) {
-                if (type == RoundScoreManagerType.PREDICTIONS) {
-                    playerManager.addPlayerPrediction(selectedPlayers[i], scores[i]);
-                } else {
-                    playerManager.addPlayerScore(selectedPlayers[i], scores[i]);
-                }
-
-                playerHeaders.get(i).setPlayerScoreView(playerManager.getPlayerScore(selectedPlayers[i]));
-            }
-        }
-    }
-
-    class RoundScoreManager {
-        private ArrayList<TextView> textViews = new ArrayList<>();
-        private GameScoreManager parent;
-        RoundScoreManagerType type;
-
-        public RoundScoreManager(GameScoreManager parent, RoundScoreManagerType type) {
-            this.parent = parent;
-            this.type = type;
-        }
-
-        void addTextView(TextView view) {
-            textViews.add(view);
-        }
-
-        void enterScores(int[] scores) {
-            for (int i = 0; i < scores.length; i++) {
-                textViews.get(i).setText(Integer.toString(scores[i]));
-            }
-            parent.enterScores(scores, type);
-        }
     }
 }
