@@ -33,14 +33,17 @@ class Player {
         return shortName;
     }
 
+    @Deprecated
     void addPrediction(int score) {
         predictedScores.add(score);
     }
 
+    @Deprecated
     void addScore(int score) {
         enteredScores.add(score);
     }
 
+    @Deprecated
     int getScore() {
         int score = 0;
         for (int i = 0; i < enteredScores.size(); i++) {

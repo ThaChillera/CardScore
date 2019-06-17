@@ -20,21 +20,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.robinkuiper.cardsscorekeeper.R;
-import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.RoundScoreManager;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.HeaderManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows.RowManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
     final private PlayerManager playerManager = PlayerManager.getInstance();
-    final private int[] selectedPlayers = playerManager.getSelectedPlayers();
 
     final int STARTINGPLAYER;
 
-    public RoundCount(Context CONTEXT, RoundScoreManager predictedRoundScoreManager, RoundScoreManager enteredRoundScoreManager, int roundNumber, int cardCount) {
+    public RoundCount(Context CONTEXT, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
-        this.STARTINGPLAYER = (roundNumber -1) % selectedPlayers.length;
+        this.STARTINGPLAYER = (roundNumber -1) % playerManager.getPlayerCount();
 
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,24 +54,30 @@ public class RoundCount extends RelativeLayout {
         Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
         Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
 
-        predictScore.setOnClickListener(new ButtonOnClickListener(predictedRoundScoreManager, predictScore, enterScore));
-        enterScore.setOnClickListener(new ButtonOnClickListener(enteredRoundScoreManager, enterScore, null));
+        predictScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, predictScore, enterScore));
+        enterScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, enterScore, null));
     }
 
     private int getPlayerIndex(int i) {
-        if (i >= selectedPlayers.length) {
-            return i - selectedPlayers.length;
+        if (i >= playerManager.getPlayerCount()) {
+            return i - playerManager.getPlayerCount();
         } else {
             return i;
         }
     }
 
     private class ButtonOnClickListener implements OnClickListener {
-        RoundScoreManager roundScoreManager;
+        GameScoreManager gameScoreManager;
+        HeaderManager headerManager;
+        RowManager rowManager;
+
+        //Used to track which button should disappear & appear when done with current operation
         Button buttonOld, buttonNew;
 
-        ButtonOnClickListener(RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
-            this.roundScoreManager = roundScoreManager;
+        ButtonOnClickListener(GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, Button buttonOld, Button buttonNew) {
+            this.gameScoreManager = gameScoreManager;
+            this.headerManager = headerManager;
+            this.rowManager = rowManager;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
         }
@@ -86,7 +97,7 @@ public class RoundCount extends RelativeLayout {
             }
 
             // Add the buttons
-            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, roundScoreManager, buttonOld, buttonNew))
+            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, gameScoreManager, headerManager, rowManager, buttonOld, buttonNew))
                     .setNegativeButton(R.string.cancel, null);
 
             final AlertDialog dialog = builder.show();
@@ -98,7 +109,7 @@ public class RoundCount extends RelativeLayout {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
             LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
-            for (int i = STARTINGPLAYER; i < selectedPlayers.length + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerManager.getPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
@@ -110,7 +121,7 @@ public class RoundCount extends RelativeLayout {
                 innerLayout.addView(getSpace());
 
                 TextView nameTextView = new TextView(CONTEXT);
-                nameTextView.setText(playerManager.getPlayerName(selectedPlayers[index]));
+                nameTextView.setText(playerManager.getPlayerName(index));
                 nameTextView.setGravity(Gravity.CENTER);
                 nameTextView.setLayoutParams(params);
 
@@ -123,7 +134,7 @@ public class RoundCount extends RelativeLayout {
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
                 input.setOnFocusChangeListener(new InputOnFocusChangeListener(dialog));
-                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == selectedPlayers.length - 1, dialog));
+                input.setOnEditorActionListener(new InputOnEditorActionListener(i - STARTINGPLAYER == playerManager.getPlayerCount() - 1, dialog));
 
                 innerLayout.addView(input);
                 innerLayout.addView(getSpace());
@@ -142,12 +153,18 @@ public class RoundCount extends RelativeLayout {
 
     private class DialogPositiveOnClickListener implements DialogInterface.OnClickListener {
         LinearLayout linearLayout;
-        RoundScoreManager roundScoreManager;
+        GameScoreManager gameScoreManager;
+        HeaderManager headerManager;
+        RowManager rowManager;
+
+        //Used to track which button should disappear & appear when done with current operation
         Button buttonOld, buttonNew;
 
-        public DialogPositiveOnClickListener(LinearLayout linearLayout, RoundScoreManager roundScoreManager, Button buttonOld, Button buttonNew) {
+        public DialogPositiveOnClickListener(LinearLayout linearLayout, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, Button buttonOld, Button buttonNew) {
             this.linearLayout = linearLayout;
-            this.roundScoreManager = roundScoreManager;
+            this.gameScoreManager = gameScoreManager;
+            this.headerManager = headerManager;
+            this.rowManager = rowManager;
             this.buttonOld = buttonOld;
             this.buttonNew = buttonNew;
         }
@@ -155,10 +172,10 @@ public class RoundCount extends RelativeLayout {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             // User clicked OK button
-            int[] inputs = new int[selectedPlayers.length];
+            int[] inputs = new int[playerManager.getPlayerCount()];
 
             //starts at STARTINGPLAYER, since input list starts at STARTINGPLAYER
-            for (int i = STARTINGPLAYER; i < selectedPlayers.length + STARTINGPLAYER; i++) {
+            for (int i = STARTINGPLAYER; i < playerManager.getPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
                 EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3);
@@ -176,8 +193,25 @@ public class RoundCount extends RelativeLayout {
                 inputs[index] = input;
             }
 
-            //return values
-            roundScoreManager.enterScores(inputs);
+            //save results
+            //todo: save playerID with input field for better code quality
+            Map<Integer, Integer> inputMap = new HashMap<>();
+            for (int i = 0; i < playerManager.getPlayerCount(); i++) {
+                inputMap.put(playerManager.getSelectedPlayers()[i], inputs[i]);
+            }
+
+            //if this entry is score, update views && activate next round
+            if (gameScoreManager.getNextEntry() == GameScoreManager.EntryType.SCORE) {
+                gameScoreManager.enterScores(inputMap);
+
+                headerManager.updateScores();
+                rowManager.updateScores();
+                //todo: activate buttons of next round
+            } else {
+                gameScoreManager.enterPredictions(inputMap);
+
+                rowManager.updatePredictions();
+            }
 
             //change buttons
             buttonOld.setVisibility(GONE);

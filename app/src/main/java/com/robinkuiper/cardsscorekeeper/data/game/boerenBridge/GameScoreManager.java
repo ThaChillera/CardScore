@@ -1,41 +1,54 @@
 package com.robinkuiper.cardsscorekeeper.data.game.boerenBridge;
 
-import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.PlayerHeader;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 
-import java.util.ArrayList;
+import java.util.Map;
 
-public class GameScoreManager {
-    private RoundScoreManager[] predictions, scores;
-    private ArrayList<PlayerHeader> playerHeaders;
+public class GameScoreManager extends ReadOnlyGameScoreManager {
 
-    GameScoreManager(int rounds, ArrayList<PlayerHeader> playerHeaders) {
-        this.playerHeaders = playerHeaders;
-        predictions = new RoundScoreManager[rounds];
-        scores = new RoundScoreManager[rounds];
+    public GameScoreManager(int playerCount) {
+        super(playerCount);
+    }
 
-        for (int i = 0; i < rounds; i++) {
-            predictions[i] = new RoundScoreManager(this, RoundScoreManagerType.PREDICTIONS);
-            scores[i] = new RoundScoreManager(this, RoundScoreManagerType.SCORES);
+    /**
+     * enter values.
+     * Will automatically assign as prediction or score, depending on game state
+     * @param values Tuple, key = playerID, value = result
+     */
+    public void enterValues(Map<Integer, Integer> values) {
+        switch (getNextEntry()) {
+            case PREDICTION:
+                enterPredictions(values);
+            case SCORE:
+                enterScores(values);
         }
     }
 
-    RoundScoreManager getPredictionRoundScoreManager(int i) {
-        return predictions[i];
-    }
-
-    RoundScoreManager getEnterRoundScoreManager(int i) {
-        return scores[i];
-    }
-
-    void enterScores(int[] scores, RoundScoreManagerType type) {
-        for (int i = 0; i < scores.length; i++) {
-            if (type == RoundScoreManagerType.PREDICTIONS) {
-                playerManager.addPlayerPrediction(selectedPlayers[i], scores[i]);
-            } else {
-                playerManager.addPlayerScore(selectedPlayers[i], scores[i]);
-            }
-
-            playerHeaders.get(i).setPlayerScoreView(playerManager.getPlayerScore(selectedPlayers[i]));
+    /**
+     * enter predictions
+     * @param predictions Tuple, key = playerID, value = result
+     */
+    public void enterPredictions(Map<Integer, Integer> predictions) {
+        if (predictedRound != null || finishedRounds.size() != round) {
+            //didn't finalise previous round data entry
+            throw new IllegalStateException("previous round not complete");
         }
+
+        predictedRound = new PredictedRound(playerCount, round, predictions);
+    }
+
+    /**
+     * enter scores
+     * @param scores Tuple, key = playerID, value = result
+     */
+    public void enterScores(Map<Integer, Integer> scores) {
+        if (predictedRound == null) {
+            throw new IllegalStateException("Missing Predictions");
+        }
+
+        finishedRounds.add(predictedRound.addScores(scores));
+
+        ++round;
+        predictedRound = null;
     }
 }

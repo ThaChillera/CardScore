@@ -1,4 +1,4 @@
-package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
+package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,9 +9,11 @@ import com.robinkuiper.cardsscorekeeper.R;
 
 public class PlayerHeader extends RelativeLayout {
     TextView playerScoreView;
+    private final int playerID;
 
-    public PlayerHeader(Context context, String name) {
+    public PlayerHeader(Context context, String name, int playerID) {
         super(context);
+        this.playerID = playerID;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_playerheader, this);
@@ -21,6 +23,10 @@ public class PlayerHeader extends RelativeLayout {
 
         playerScoreView = findViewById(R.id.playerheader_boerenbridge_playerscore);
         playerScoreView.setText(Integer.toString(0));
+    }
+
+    public int getPlayerID() {
+        return playerID;
     }
 
     void setPlayerScoreView(int score) {

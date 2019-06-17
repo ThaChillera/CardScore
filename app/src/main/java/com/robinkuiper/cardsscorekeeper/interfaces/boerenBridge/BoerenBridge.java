@@ -7,16 +7,24 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 
 import com.robinkuiper.cardsscorekeeper.R;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.HeaderManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.PlayerHeader;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows.RowManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows.ScoreCard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
 
-    private PlayerManager playerManager = PlayerManager.getInstance();
-    private int[] selectedPlayers = playerManager.getSelectedPlayers();
+    private final PlayerManager playerManager = PlayerManager.getInstance();
+    private final GameScoreManager gameScoreManager = new GameScoreManager(playerManager.getPlayerCount());
+
+    private HeaderManager headerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,40 +40,41 @@ public class BoerenBridge extends AppCompatActivity {
         LayoutParams params = new LayoutParams((int) width, (int) height);
 
         //add players
-        grid.setColumnCount(selectedPlayers.length + 1);
+        grid.setColumnCount(playerManager.getPlayerCount() + 1);
 
+        //add player headers
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();
-        for (int index: selectedPlayers) {
-            //add gplayer headers
-            PlayerHeader playerHeader = new PlayerHeader(this, playerManager.getPlayerName(index));
+        for (int playerID: playerManager.getSelectedPlayers()) {
+            PlayerHeader playerHeader = new PlayerHeader(this, playerManager.getPlayerName(playerID), playerID);
             playerHeader.setLayoutParams(params);
             grid.addView(playerHeader);
             playerHeaders.add(playerHeader);
         }
+        headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
 
         //add round + scores
-        int maxCards = 52 % selectedPlayers.length == 0 ? (52 - selectedPlayers.length) / selectedPlayers.length : 52 / selectedPlayers.length;
-        int amountOfRounds = ((maxCards * 2)) - 1;
+        for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
+            //create player round info
+            ArrayList<ScoreCard> scoreCards = new ArrayList<>();
+            for (int playerID: playerManager.getSelectedPlayers()) {
+                ScoreCard sc = new ScoreCard(this, playerID);
+                sc.setLayoutParams(params);
+                scoreCards.add(sc);
+            }
 
-        GameScoreManager gameScoreManager = new GameScoreManager(amountOfRounds, playerHeaders);
-
-        for (int rounds = 1; rounds < amountOfRounds + 1; rounds++) {
             //add general round info
-            int cardCount = rounds < maxCards ? rounds: maxCards - (rounds - maxCards);
+            int cardCount = rounds < gameScoreManager.getMaxCards() ? rounds: gameScoreManager.getMaxCards() - (rounds - gameScoreManager.getMaxCards());
             RoundCount rc = new RoundCount(this,
-                    gameScoreManager.getPredictionRoundScoreManager(rounds - 1),
-                    gameScoreManager.getEnterRoundScoreManager(rounds - 1),
+                    gameScoreManager,
+                    headerManager,
+                    new RowManager(rounds - 1, scoreCards, gameScoreManager),
                     rounds, cardCount);
             rc.setLayoutParams(params);
             grid.addView(rc);
 
             //add player round info
-            for (int i = 0; i < selectedPlayers.length; i++) {
-                ScoreCard sc = new ScoreCard(this,
-                        gameScoreManager.getPredictionRoundScoreManager(rounds - 1),
-                        gameScoreManager.getEnterRoundScoreManager(rounds - 1));
-                sc.setLayoutParams(params);
-                grid.addView(sc);
+            for (ScoreCard card: scoreCards) {
+                grid.addView(card);
             }
         }
     }
