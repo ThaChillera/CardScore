@@ -53,18 +53,6 @@ public class PlayerManager {
         return players.get(playerId).getShortName();
     }
 
-    public int getPlayerScore(int playerId) {
-        return players.get(playerId).getScore();
-    }
-
-    public void addPlayerPrediction(int playerId, int prediction) {
-        players.get(playerId).addPrediction(prediction);
-    }
-
-    public void addPlayerScore(int playerId, int score) {
-        players.get(playerId).addScore(score);
-    }
-
     public void addPlayer(String name, String shortName) {
         players.add(new Player(name, shortName));
     }
@@ -115,10 +103,6 @@ public class PlayerManager {
         Gson gson = builder.create();
 
         try {
-            for (Player player: players) {
-                player.reset();
-            }
-
             FileOutputStream outputStream =context.openFileOutput(PLAYERDATALOCATION, Context.MODE_PRIVATE);
             outputStream.write(gson.toJson(players.toArray()).getBytes());
             outputStream.close();

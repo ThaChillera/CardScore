@@ -6,9 +6,14 @@
 * randomize starting player
 
 ### BoerenBridge
-* Check score total == total cards (input validation)
 * Limit rounds start of game
 * limit rounds mid-game
+* only show button of current round, hide future rounds buttons
+* keep showing headers when scrolling down
+* allow for input correction
+* Fix Prediction/Score input
+** Replace dynamic dialog interface with a fragment
+** Save playerID per input field, to guarantee correct value connection
 
 ### Saving
 * Save game results
@@ -17,7 +22,3 @@
 ### Misc
 * rename app
 * change app icon
-* refactor data storage
-** separate Data folder
-** separate game data from game activity
-** separate game data from player object
