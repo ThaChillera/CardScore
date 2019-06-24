@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import com.robinkuiper.cardsscorekeeper.R;
 
+/**
+ * Headers of the score sheet.
+ * Displays the player name & total score
+ */
 public class PlayerHeader extends RelativeLayout {
     TextView playerScoreView;
     private final int playerID;

@@ -7,6 +7,10 @@ import android.widget.TextView;
 
 import com.robinkuiper.cardsscorekeeper.R;
 
+/**
+ * Squares in the score sheet.
+ * Displays prediction and score for given player, in a specific round
+ */
 public class ScoreCard extends LinearLayout {
     final String TAG = "ScoreCard";
     private final int playerID;

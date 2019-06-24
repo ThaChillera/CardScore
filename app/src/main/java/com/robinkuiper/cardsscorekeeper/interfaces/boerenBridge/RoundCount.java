@@ -29,6 +29,10 @@ import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows.RowManager;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Square on the left of the score sheet.
+ * Keeps track of rounds & contains predict & enter score buttons.
+ */
 public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
