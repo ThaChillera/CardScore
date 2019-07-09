@@ -11,8 +11,8 @@
 * only show button of current round, hide future rounds buttons
 * keep showing headers when scrolling down
 * allow for input correction
-* Fix Prediction/Score input
-** Replace dynamic dialog interface with a fragment
+* Improve Prediction/Score input
+** Replace dynamic dialog interface with a better input system, eg pressing player name to +1/-1 prediction/score
 ** Save playerID per input field, to guarantee correct value connection
 
 ### Saving
