@@ -1,7 +1,7 @@
 package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
