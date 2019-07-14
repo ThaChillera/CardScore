@@ -25,7 +25,7 @@ public class ReadOnlyGameScoreManager {
     ReadOnlyGameScoreManager(int playerCount) {
         this.playerCount = playerCount;
 
-        maxCards = 3;// 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
+        maxCards = 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
         amountOfRounds = ((maxCards * 2)) - 1;
     }
 
