@@ -6,10 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.View;
 
 import com.robinkuiper.cardsscorekeeper.R;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
+import com.woxthebox.draglistview.DragItemRecyclerView;
+import com.woxthebox.draglistview.DragListView;
+
+import java.util.ArrayList;
 
 public class PlayerSelectActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
@@ -22,24 +28,59 @@ public class PlayerSelectActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.playerselect_playerlist);
+//        RecyclerView recyclerView = findViewById(R.id.playerselect_playerlist);
+//
+//        // use this setting to improve performance if you know that changes
+//        // in content do not change the layout size of the RecyclerView
+//        recyclerView.setHasFixedSize(true);
+//
+//        // use a linear layout manager
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+//
+//        mAdapter = new PlayerListAdapter(this);
+//        recyclerView.setAdapter(mAdapter);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+        final ArrayList<String> testData = new ArrayList<>();
+        for (int i = 0; i < 40; i++) {
+            testData.add("Item " + i);
+        }
 
-        // use a linear layout manager
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        //custom list
+        DragListView dragItemRecyclerView = findViewById(R.id.playerselect_dragitemrecycler);
+        dragItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new PlayerListAdapter(this);
-        recyclerView.setAdapter(mAdapter);
+        dragItemRecyclerView.setAdapter(new PlayerListDraggableAdapter(this, testData), false);
+        dragItemRecyclerView.setCanDragHorizontally(false);
+
+        dragItemRecyclerView.setDragListListener(new DragListView.DragListListener() {
+            @Override
+            public void onItemDragStarted(int position) {
+            }
+
+            @Override
+            public void onItemDragging(int itemPosition, float x, float y) {
+
+            }
+
+            @Override
+            public void onItemDragEnded(int fromPosition, int toPosition) {
+                if (fromPosition != toPosition) {
+                    testData.add(toPosition, testData.get(fromPosition));
+                    if (fromPosition > toPosition) {
+                        testData.remove(fromPosition + 1);
+                    } else {
+                        testData.remove(fromPosition);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mAdapter.notifyDataSetChanged();
+//        mAdapter.notifyDataSetChanged();
     }
 
     @Override

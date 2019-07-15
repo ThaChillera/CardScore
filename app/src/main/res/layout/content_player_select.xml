@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".interfaces.player.PlayerSelectActivity"
     tools:showIn="@layout/activity_player_select">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playerselect_playerlist"
-        android:scrollbars="vertical"
+    <com.woxthebox.draglistview.DragListView
+        android:id="@+id/playerselect_dragitemrecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="90" />
 
     <Button
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/player_select_return"
+        android:layout_height="0dp"
+        android:layout_weight="10"
         android:onClick="onClickReturnClick"
-        android:layout_alignParentBottom="true"/>
-</RelativeLayout>
+        android:text="@string/player_select_return" />
+</LinearLayout>
