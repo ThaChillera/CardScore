@@ -93,8 +93,8 @@ public class PlayerManager {
 
         //Junk Players
         if (BuildConfig.DEBUG && players.isEmpty()) {
-            addPlayer("Test Player 1", "Test1");
-            addPlayer("Test PLayer 2", "Test2");
+            addPlayer("Test Player 1", "T1");
+            addPlayer("Test PLayer 2", "T2");
         }
     }
 
