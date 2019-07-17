@@ -10,11 +10,14 @@
     tools:context=".interfaces.player.PlayerSelectActivity"
     tools:showIn="@layout/activity_player_select">
 
-    <com.woxthebox.draglistview.DragListView
-        android:id="@+id/playerselect_dragitemrecycler"
-        android:layout_width="match_parent"
+    <com.woxthebox.draglistview.BoardView
+        android:id="@+id/playerselect_dragboard"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="90" />
+        android:layout_weight="90">
+
+
+    </com.woxthebox.draglistview.BoardView>
 
     <Button
         android:layout_width="match_parent"

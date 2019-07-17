@@ -44,7 +44,7 @@ public class BoerenBridge extends AppCompatActivity {
 
         //add player headers
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();
-        for (int playerID: playerManager.getSelectedPlayers()) {
+        for (long playerID: playerManager.getSelectedPlayers()) {
             PlayerHeader playerHeader = new PlayerHeader(this, playerManager.getPlayerName(playerID), playerID);
             playerHeader.setLayoutParams(params);
             grid.addView(playerHeader);
@@ -56,7 +56,7 @@ public class BoerenBridge extends AppCompatActivity {
         for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
             //create player round info
             ArrayList<ScoreCard> scoreCards = new ArrayList<>();
-            for (int playerID: playerManager.getSelectedPlayers()) {
+            for (long playerID: playerManager.getSelectedPlayers()) {
                 ScoreCard sc = new ScoreCard(this, playerID);
                 sc.setLayoutParams(params);
                 scoreCards.add(sc);

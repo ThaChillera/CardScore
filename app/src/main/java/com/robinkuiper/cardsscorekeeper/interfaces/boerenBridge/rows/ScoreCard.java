@@ -13,11 +13,11 @@ import com.robinkuiper.cardsscorekeeper.R;
  */
 public class ScoreCard extends LinearLayout {
     final String TAG = "ScoreCard";
-    private final int playerID;
+    private final long playerID;
 
     TextView predictedRoundsView, scoredRoundsView;
 
-    public ScoreCard(Context context, int playerID) {
+    public ScoreCard(Context context, long playerID) {
         super(context);
         this.playerID = playerID;
 
@@ -28,7 +28,7 @@ public class ScoreCard extends LinearLayout {
         scoredRoundsView = findViewById(R.id.scorecard_boerenbridge_scoredrounds);
     }
 
-    public int getPlayerID() {
+    public long getPlayerID() {
         return playerID;
     }
 

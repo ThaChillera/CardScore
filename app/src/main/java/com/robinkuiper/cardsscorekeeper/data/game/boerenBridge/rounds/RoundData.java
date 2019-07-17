@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 class RoundData {
-    final private Map<Integer, Integer> predictions, scores, results;
+    final private Map<Long, Integer> predictions, scores, results;
     final private int playerCount, cardCount;
 
     final private PlayerManager playerManager = PlayerManager.getInstance();
 
-    RoundData(int playerCount, int cardCount, Map<Integer, Integer> predictions) {
+    RoundData(int playerCount, int cardCount, Map<Long, Integer> predictions) {
         this.playerCount = playerCount;
         this.cardCount = cardCount;
 
@@ -28,12 +28,12 @@ class RoundData {
             }
         }
 
-        for (int playerID: predictions.keySet()) {
+        for (long playerID: predictions.keySet()) {
             this.predictions.put(playerID, predictions.get(playerID));
         }
     }
 
-    FinishedRound addScores(Map<Integer, Integer> scores) {
+    FinishedRound addScores(Map<Long, Integer> scores) {
         //validate input
         int totalScore = 0;
         for (int value: scores.values()) {
@@ -45,7 +45,7 @@ class RoundData {
         if (totalScore != cardCount)
             throw new IllegalArgumentException("Incorrectly entered score");
 
-        for (int playerID: scores.keySet()) {
+        for (long playerID: scores.keySet()) {
             this.scores.put(playerID, scores.get(playerID));
         }
 
@@ -56,7 +56,7 @@ class RoundData {
     private void calculateScores() {
         //calculate results
         for (int i = 0; i < playerCount; i++) {
-            int playerID = playerManager.getSelectedPlayers()[i];
+            long playerID = playerManager.getSelectedPlayers()[i];
             results.put(playerID,
                     predictions.get(playerID).equals(scores.get(playerID))
                         ? 10 + (2* scores.get(playerID))
@@ -64,15 +64,15 @@ class RoundData {
         }
     }
 
-    Map<Integer, Integer> getPredictions() {
+    Map<Long, Integer> getPredictions() {
         return Collections.unmodifiableMap(this.predictions);
     }
 
-    Map<Integer, Integer> getScores() {
+    Map<Long, Integer> getScores() {
         return Collections.unmodifiableMap(this.scores);
     }
 
-    Map<Integer, Integer> getResults() {
+    Map<Long, Integer> getResults() {
         return Collections.unmodifiableMap(this.results);
     }
 }

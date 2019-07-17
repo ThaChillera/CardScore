@@ -51,7 +51,7 @@ public class ReadOnlyGameScoreManager {
         return round <= maxCards ? round : maxCards - (round - maxCards);
     }
 
-    public Map<Integer, Integer> getPredictions(int round) {
+    public Map<Long, Integer> getPredictions(int round) {
         if (round >= 0 && round < this.round) {
             return finishedRounds.get(round).getPredictions();
         } else if (round == this.round) {
@@ -61,7 +61,7 @@ public class ReadOnlyGameScoreManager {
         }
     }
 
-    public Map<Integer, Integer> getScores(int round) {
+    public Map<Long, Integer> getScores(int round) {
         if (round >= 0 && round < this.round) {
             return finishedRounds.get(round).getScores();
         } else {
@@ -73,10 +73,10 @@ public class ReadOnlyGameScoreManager {
      * get Map of results
      * @return Map, key = playerID, value = result
      */
-    public Map<Integer, Integer> getResults() {
-        Map<Integer, Integer> results = new HashMap<>();
+    public Map<Long, Integer> getResults() {
+        Map<Long, Integer> results = new HashMap<>();
 
-        for (int playerID: playerManager.getSelectedPlayers()) {
+        for (long playerID: playerManager.getSelectedPlayers()) {
             results.put(playerID, getResult(playerID));
         }
 
@@ -88,7 +88,7 @@ public class ReadOnlyGameScoreManager {
      * @param playerID ID of player
      * @return result
      */
-    public int getResult(int playerID) {
+    public int getResult(long playerID) {
         int result = 0;
         for (FinishedRound round: finishedRounds) {
             result += round.getResults().get(playerID);

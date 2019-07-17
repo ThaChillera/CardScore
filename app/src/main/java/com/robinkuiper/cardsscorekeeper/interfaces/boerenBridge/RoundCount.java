@@ -215,7 +215,7 @@ public class RoundCount extends RelativeLayout {
 
             //save results
             //todo: save playerID with input field for better code quality
-            Map<Integer, Integer> inputMap = new HashMap<>();
+            Map<Long, Integer> inputMap = new HashMap<>();
             for (int i = 0; i < playerManager.getSelectedPlayerCount(); i++) {
                 inputMap.put(playerManager.getSelectedPlayers()[i], inputs[i]);
             }

@@ -17,7 +17,7 @@ public class RowManager {
     }
 
     public void updatePredictions() {
-        Map<Integer, Integer> predictions = gameScoreManager.getPredictions(roundNumber);
+        Map<Long, Integer> predictions = gameScoreManager.getPredictions(roundNumber);
 
         for (ScoreCard scoreCard: scoreCards) {
             scoreCard.setPrediction(predictions.get(scoreCard.getPlayerID()));
@@ -25,7 +25,7 @@ public class RowManager {
     }
 
     public void updateScores() {
-        Map<Integer, Integer> scores = gameScoreManager.getScores(roundNumber);
+        Map<Long, Integer> scores = gameScoreManager.getScores(roundNumber);
 
         for (ScoreCard scoreCard: scoreCards) {
             scoreCard.setScore(scores.get(scoreCard.getPlayerID()));

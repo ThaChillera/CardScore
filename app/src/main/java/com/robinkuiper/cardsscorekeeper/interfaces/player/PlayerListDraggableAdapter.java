@@ -2,6 +2,7 @@ package com.robinkuiper.cardsscorekeeper.interfaces.player;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +17,10 @@ import com.woxthebox.draglistview.DragItemAdapter;
 import java.util.ArrayList;
 
 public class PlayerListDraggableAdapter extends DragItemAdapter<Integer, PlayerListDraggableAdapter.PlayerViewHolder>  {
-    private final PlayerManager PLAYERMANAGER = PlayerManager.getInstance();
     private final Activity ACTIVITY;
-    private final ArrayList<String> data;
+    private final ArrayList<Pair<Long, String>> data;
 
-    public PlayerListDraggableAdapter(Activity ACTIVITY, ArrayList<String> data) {
+    public PlayerListDraggableAdapter(Activity ACTIVITY, ArrayList<Pair<Long, String>> data) {
         this.ACTIVITY = ACTIVITY;
         this.data = data;
     }
@@ -31,10 +31,16 @@ public class PlayerListDraggableAdapter extends DragItemAdapter<Integer, PlayerL
     class PlayerViewHolder extends DragItemAdapter.ViewHolder {
         // each data item is just a string in this case
         private View player;
+        private TextView textView;
 
         PlayerViewHolder(View v) {
             super(v, R.id.player_select_player_container, true);
             player = v;
+            textView = v.findViewById(R.id.player_select_player_name);
+        }
+
+        void fillView(String playerName) {
+            textView.setText(playerName);
         }
     }
 
@@ -42,24 +48,24 @@ public class PlayerListDraggableAdapter extends DragItemAdapter<Integer, PlayerL
     @Override
     public PlayerViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View player = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.player_select_player, viewGroup, false);
-        ((TextView) player.findViewById(R.id.player_select_player_name)).setText(data.get(i));
 //        button.setOnLongClickListener(new CheckBoxOnLongClickListener(i));
 
         PlayerViewHolder vh = new PlayerViewHolder(player);
+        vh.fillView(data.get(i).second);
+
         return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull PlayerViewHolder viewHolder, int i) {
         super.onBindViewHolder(viewHolder, i);
-        View player = viewHolder.player;
-        ((TextView) player.findViewById(R.id.player_select_player_name)).setText(data.get(i));
+        viewHolder.fillView(data.get(i).second);
 //        button.setOnLongClickListener(new CheckBoxOnLongClickListener(i));
     }
 
     @Override
     public long getUniqueItemId(int position) {
-        return Integer.parseInt(data.get(position).split(" ")[1]);
+        return data.get(position).first;
     }
 
     @Override
