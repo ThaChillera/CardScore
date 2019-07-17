@@ -9,15 +9,15 @@ public class FinishedRound {
         this.roundData = roundData;
     }
 
-    public Map<Integer, Integer> getPredictions() {
+    public Map<Long, Integer> getPredictions() {
         return roundData.getPredictions();
     }
 
-    public Map<Integer, Integer> getScores() {
+    public Map<Long, Integer> getScores() {
         return roundData.getScores();
     }
 
-    public Map<Integer, Integer> getResults() {
+    public Map<Long, Integer> getResults() {
         return roundData.getResults();
     }
 }

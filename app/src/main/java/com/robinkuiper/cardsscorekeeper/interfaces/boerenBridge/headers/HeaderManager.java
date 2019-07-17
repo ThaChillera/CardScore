@@ -15,7 +15,7 @@ public class HeaderManager {
     }
 
     public void updateScores() {
-        Map<Integer, Integer> results = gameScoreManager.getResults();
+        Map<Long, Integer> results = gameScoreManager.getResults();
         for (PlayerHeader playerHeader: playerHeaders) {
             playerHeader.setPlayerScoreView(results.get(playerHeader.getPlayerID()));
         }

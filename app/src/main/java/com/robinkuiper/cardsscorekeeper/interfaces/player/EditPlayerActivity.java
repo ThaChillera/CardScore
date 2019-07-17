@@ -15,14 +15,14 @@ public class EditPlayerActivity extends AppCompatActivity {
 
     PlayerManager playerManager = PlayerManager.getInstance();
 
-    int playerId;
+    private long playerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editplayer);
 
-        playerId = getIntent().getIntExtra(PLAYERIDEXTRA, -1);
+        playerId = getIntent().getLongExtra(PLAYERIDEXTRA, -1);
 
         if (playerId == -1) {
             //new player

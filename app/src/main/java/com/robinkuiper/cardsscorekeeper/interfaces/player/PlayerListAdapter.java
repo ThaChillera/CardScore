@@ -21,12 +21,20 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         private CheckBox checkBox;
+
         MyViewHolder(CheckBox v) {
             super(v);
             checkBox = v;
+        }
+
+        void updateContents(long playerId) {
+            checkBox.setChecked(PLAYERMANAGER.isPlayerSelected(playerId));
+            checkBox.setText(PLAYERMANAGER.getPlayerName(playerId));
+            checkBox.setOnClickListener(new CheckBoxOnClickListener(playerId));
+            checkBox.setOnLongClickListener(new CheckBoxOnLongClickListener(playerId));
         }
     }
 
@@ -34,22 +42,16 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         CheckBox button = new CheckBox(viewGroup.getContext());
-        button.setChecked(PLAYERMANAGER.isPlayerSelected(i));
-        button.setText(PLAYERMANAGER.getPlayerName(i));
-        button.setOnClickListener(new CheckBoxOnClickListener(i));
-        button.setOnLongClickListener(new CheckBoxOnLongClickListener(i));
-
         MyViewHolder vh = new MyViewHolder(button);
+
+        vh.updateContents(PLAYERMANAGER.getAllPlayerIds()[i]);
+
         return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
-        CheckBox button = viewHolder.checkBox;
-        button.setChecked(PLAYERMANAGER.isPlayerSelected(i));
-        button.setText(PLAYERMANAGER.getPlayerName(i));
-        button.setOnClickListener(new CheckBoxOnClickListener(i));
-        button.setOnLongClickListener(new CheckBoxOnLongClickListener(i));
+        viewHolder.updateContents(PLAYERMANAGER.getAllPlayerIds()[i]);
     }
 
     @Override
@@ -58,9 +60,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {
-        final int ID;
+        final long ID;
 
-        public CheckBoxOnClickListener(int ID) {
+        public CheckBoxOnClickListener(long ID) {
             this.ID = ID;
         }
 
@@ -76,9 +78,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
     }
 
     private class CheckBoxOnLongClickListener implements View.OnLongClickListener {
-        final int ID;
+        final long ID;
 
-        public CheckBoxOnLongClickListener(int ID) {
+        public CheckBoxOnLongClickListener(long ID) {
             this.ID = ID;
         }
 

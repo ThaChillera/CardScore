@@ -115,6 +115,7 @@ public class RoundCount extends RelativeLayout {
 
             for (int i = STARTINGPLAYER; i < playerManager.getSelectedPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
+                long playerId = playerManager.getSelectedPlayers()[index];
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -125,7 +126,7 @@ public class RoundCount extends RelativeLayout {
                 innerLayout.addView(getSpace());
 
                 TextView nameTextView = new TextView(CONTEXT);
-                nameTextView.setText(playerManager.getPlayerName(index));
+                nameTextView.setText(playerManager.getPlayerName(playerId));
                 nameTextView.setGravity(Gravity.CENTER);
                 nameTextView.setLayoutParams(params);
 
@@ -215,7 +216,7 @@ public class RoundCount extends RelativeLayout {
 
             //save results
             //todo: save playerID with input field for better code quality
-            Map<Integer, Integer> inputMap = new HashMap<>();
+            Map<Long, Integer> inputMap = new HashMap<>();
             for (int i = 0; i < playerManager.getSelectedPlayerCount(); i++) {
                 inputMap.put(playerManager.getSelectedPlayers()[i], inputs[i]);
             }

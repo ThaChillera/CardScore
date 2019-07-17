@@ -18,13 +18,30 @@ public class PlayerManager {
     private static final String PLAYERDATALOCATION = "playerdata.json";
     private static final PlayerManager ourInstance = new PlayerManager();
     private ArrayList<Player> players;
-    private ArrayList<Integer> selectedPlayers = new ArrayList<>();
+    private ArrayList<Long> selectedPlayers = new ArrayList<>();
 
     public static PlayerManager getInstance() {
         return ourInstance;
     }
 
     private PlayerManager() {
+    }
+
+    private Player getPlayer(long playerId) {
+        for (Player player: players) {
+            if (player.getId() == playerId) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public long[] getAllPlayerIds() {
+        long[] ids = new long[getAllPlayersCount()];
+        for (int i = 0; i < getAllPlayersCount(); i++) {
+            ids[i] = players.get(i).getId();
+        }
+        return ids;
     }
 
     public int getAllPlayersCount() {
@@ -35,8 +52,8 @@ public class PlayerManager {
         return selectedPlayers.size();
     }
 
-    public int[] getSelectedPlayers() {
-        int[] returnValues = new int[getSelectedPlayerCount()];
+    public long[] getSelectedPlayers() {
+        long[] returnValues = new long[getSelectedPlayerCount()];
 
         for (int i = 0; i < selectedPlayers.size(); i++) {
             returnValues[i] = selectedPlayers.get(i);
@@ -45,39 +62,44 @@ public class PlayerManager {
         return returnValues;
     }
 
-    public String getPlayerName(int playerId) {
-        return players.get(playerId).getName();
+    public String getPlayerName(long playerId) {
+        return getPlayer(playerId).getName();
     }
 
-    public String getPlayerShortName(int playerId) {
-        return players.get(playerId).getShortName();
+    public String getPlayerShortName(long playerId) {
+        return getPlayer(playerId).getShortName();
     }
 
     public void addPlayer(String name, String shortName) {
-        players.add(new Player(name, shortName));
+        long id = System.currentTimeMillis();
+        while (getPlayer(id) != null) {
+            id = System.currentTimeMillis();
+        }
+
+        players.add(new Player(id, name, shortName));
     }
 
-    public void editPlayer(int playerId, String name, String shortName) {
-        players.get(playerId).editPlayer(name, shortName);
+    public void editPlayer(long playerId, String name, String shortName) {
+        getPlayer(playerId).editPlayer(name, shortName);
     }
 
-    public void deletePlayer(int playerId) {
-        players.remove(playerId);
+    public void deletePlayer(long playerId) {
+        players.remove(getPlayer(playerId));
     }
 
-    public void selectPlayer(int playerId) {
+    public void selectPlayer(long playerId) {
         if (!isPlayerSelected(playerId)) {
             selectedPlayers.add(playerId);
         }
     }
 
-    public void deselectPlayer(int playerId) {
+    public void deselectPlayer(long playerId) {
         if (isPlayerSelected(playerId)) {
-            selectedPlayers.remove((Integer) playerId);
+            selectedPlayers.remove(playerId);
         }
     }
 
-    public boolean isPlayerSelected(int playerId) {
+    public boolean isPlayerSelected(long playerId) {
         return selectedPlayers.contains(playerId);
     }
 

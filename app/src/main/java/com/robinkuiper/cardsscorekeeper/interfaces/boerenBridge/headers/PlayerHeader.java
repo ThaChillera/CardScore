@@ -13,9 +13,9 @@ import com.robinkuiper.cardsscorekeeper.R;
  */
 public class PlayerHeader extends RelativeLayout {
     TextView playerScoreView;
-    private final int playerID;
+    private final long playerID;
 
-    public PlayerHeader(Context context, String name, int playerID) {
+    public PlayerHeader(Context context, String name, long playerID) {
         super(context);
         this.playerID = playerID;
 
@@ -29,7 +29,7 @@ public class PlayerHeader extends RelativeLayout {
         playerScoreView.setText(Integer.toString(0));
     }
 
-    public int getPlayerID() {
+    public long getPlayerID() {
         return playerID;
     }
 

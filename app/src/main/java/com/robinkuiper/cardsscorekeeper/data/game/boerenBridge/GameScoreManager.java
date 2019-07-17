@@ -15,7 +15,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
      * Will automatically assign as prediction or score, depending on game state
      * @param values Tuple, key = playerID, value = result
      */
-    public void enterValues(Map<Integer, Integer> values) {
+    public void enterValues(Map<Long, Integer> values) {
         switch (getNextEntry()) {
             case PREDICTION:
                 enterPredictions(values);
@@ -28,7 +28,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
      * enter predictions
      * @param predictions Tuple, key = playerID, value = result
      */
-    public void enterPredictions(Map<Integer, Integer> predictions) {
+    public void enterPredictions(Map<Long, Integer> predictions) {
         if (predictedRound != null || finishedRounds.size() != round) {
             //didn't finalise previous round data entry
             throw new IllegalStateException("previous round not complete");
@@ -41,7 +41,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
      * enter scores
      * @param scores Tuple, key = playerID, value = result
      */
-    public void enterScores(Map<Integer, Integer> scores) {
+    public void enterScores(Map<Long, Integer> scores) {
         if (predictedRound == null) {
             throw new IllegalStateException("Missing Predictions");
         }
