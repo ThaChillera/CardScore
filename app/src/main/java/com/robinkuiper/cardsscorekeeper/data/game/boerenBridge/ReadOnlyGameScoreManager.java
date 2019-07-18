@@ -1,28 +1,44 @@
 package com.robinkuiper.cardsscorekeeper.data.game.boerenBridge;
 
+import android.content.Context;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
+import com.robinkuiper.cardsscorekeeper.interfaces.GameSelectActivity;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ReadOnlyGameScoreManager {
-    private final PlayerManager playerManager = PlayerManager.getInstance();
+
+    private transient final static String GAMEDATAFOLDER = "gamedata_", GAMESCOREMANAGERLOCATION = GAMEDATAFOLDER + "manager.json", SELECTEDPLAYERSLOCATION = GAMEDATAFOLDER + "selectedplayers.json";
+
+    transient PlayerManager playerManager = PlayerManager.getInstance();
+    transient Context context;
 
     //current round
     int round = 0;
     final int playerCount;
 
-    final int maxCards;
-    final int amountOfRounds;
+    private final int maxCards, amountOfRounds;
 
     PredictedRound predictedRound = null;
     ArrayList<FinishedRound> finishedRounds = new ArrayList<>();
 
-    ReadOnlyGameScoreManager(int playerCount) {
+    ReadOnlyGameScoreManager(final Context context, int playerCount) {
+        this.context = context;
         this.playerCount = playerCount;
 
         maxCards = 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
@@ -57,7 +73,7 @@ public class ReadOnlyGameScoreManager {
         } else if (round == this.round) {
             return predictedRound.getPredictions();
         } else {
-            throw new IllegalArgumentException("invalid round");
+            return null;
         }
     }
 
@@ -65,7 +81,7 @@ public class ReadOnlyGameScoreManager {
         if (round >= 0 && round < this.round) {
             return finishedRounds.get(round).getScores();
         } else {
-            throw new IllegalArgumentException("invalid round");
+            return null;
         }
     }
 
@@ -103,5 +119,47 @@ public class ReadOnlyGameScoreManager {
 
     public GameScoreManager.EntryType getNextEntry() {
         return predictedRound == null ? GameScoreManager.EntryType.PREDICTION : GameScoreManager.EntryType.SCORE;
+    }
+
+    public static boolean hasExistingSave(Context context) {
+        return new File(context.getFilesDir(),GAMESCOREMANAGERLOCATION).exists() && new File(context.getFilesDir(),SELECTEDPLAYERSLOCATION).exists();
+    }
+
+    public static GameScoreManager loadGameData(Context context) {
+        PlayerManager playerManager = PlayerManager.getInstance();
+        long[] selectedPlayersBackup = playerManager.getSelectedPlayers();
+        try {
+            FileInputStream inputStream = context.openFileInput(SELECTEDPLAYERSLOCATION);
+            playerManager.replaceSelectedPlayers(new Gson().fromJson(new InputStreamReader(inputStream), long[].class));
+
+            inputStream = context.openFileInput(GAMESCOREMANAGERLOCATION);
+            GameScoreManager gameScoreManager = new Gson().fromJson(new InputStreamReader(inputStream), GameScoreManager.class);
+            gameScoreManager.playerManager = PlayerManager.getInstance();
+            gameScoreManager.context = context;
+            return gameScoreManager;
+
+        } catch (IOException exception) {
+            Toast.makeText(context, "GameManager failed to load, some info could be lost", Toast.LENGTH_LONG).show();
+            playerManager.replaceSelectedPlayers(selectedPlayersBackup);
+            return new GameScoreManager(context, PlayerManager.getInstance().getSelectedPlayerCount());
+        }
+    }
+
+    public void saveGameData() {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        try {
+            FileOutputStream outputStream = context.openFileOutput(GAMESCOREMANAGERLOCATION, Context.MODE_PRIVATE);
+            outputStream.write(gson.toJson(this).getBytes());
+            outputStream.close();
+
+            outputStream = context.openFileOutput(SELECTEDPLAYERSLOCATION, Context.MODE_PRIVATE);
+            outputStream.write(gson.toJson(playerManager.getSelectedPlayers()).getBytes());
+            outputStream.close();
+
+        } catch (IOException exception) {
+            Toast.makeText(context, "GameManager failed to save, some info could be lost", Toast.LENGTH_LONG).show();
+        }
     }
 }
