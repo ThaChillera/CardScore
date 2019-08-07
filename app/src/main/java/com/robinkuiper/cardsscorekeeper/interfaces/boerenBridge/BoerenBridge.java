@@ -8,7 +8,6 @@ import android.widget.GridLayout;
 
 import com.robinkuiper.cardsscorekeeper.R;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
-import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.HeaderManager;
 import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.PlayerHeader;
@@ -17,29 +16,19 @@ import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows.ScoreCard;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
 public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
-    final static public String LOADSAVEGAMEEXTRA = "LoadSaveGame";
 
     private final PlayerManager playerManager = PlayerManager.getInstance();
-    private GameScoreManager gameScoreManager;
+    private final GameScoreManager gameScoreManager = new GameScoreManager(playerManager.getSelectedPlayerCount());
 
     private HeaderManager headerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //load save if relevant
-        boolean loadSave = getIntent().getBooleanExtra(LOADSAVEGAMEEXTRA, false);
-        if (loadSave) {
-            gameScoreManager = ReadOnlyGameScoreManager.loadGameData(getApplicationContext());
-        } else {
-            gameScoreManager = new GameScoreManager(getApplicationContext(), PlayerManager.getInstance().getSelectedPlayerCount());
-        }
 
         setContentView(R.layout.activity_boeren_bridge);
 
@@ -63,48 +52,23 @@ public class BoerenBridge extends AppCompatActivity {
         }
         headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
 
-        if (loadSave) {
-            headerManager.updateScores();
-        }
-
         //add round + scores
         for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
             //create player round info
             ArrayList<ScoreCard> scoreCards = new ArrayList<>();
             for (long playerID: playerManager.getSelectedPlayers()) {
-                ScoreCard sc;
-                if (loadSave) {
-                    Integer prediction = gameScoreManager.getPredictions(rounds - 1) != null
-                            ? gameScoreManager.getPredictions(rounds - 1).get(playerID)
-                            : null;
-                    Integer score = gameScoreManager.getScores(rounds - 1) != null
-                            ? gameScoreManager.getScores(rounds - 1).get(playerID)
-                            : null;
-                    sc = new ScoreCard(this, playerID, prediction, score);
-                } else {
-                    sc = new ScoreCard(this, playerID);
-                }
+                ScoreCard sc = new ScoreCard(this, playerID);
                 sc.setLayoutParams(params);
-
                 scoreCards.add(sc);
             }
 
             //add general round info
             int cardCount = rounds < gameScoreManager.getMaxCards() ? rounds: gameScoreManager.getMaxCards() - (rounds - gameScoreManager.getMaxCards());
-            RoundCount rc;
-            if (loadSave && gameScoreManager.getPredictions(rounds - 1) != null) {
-                rc = new RoundCount(this,
-                        gameScoreManager,
-                        headerManager,
-                        new RowManager(rounds - 1, scoreCards, gameScoreManager),
-                        rounds, cardCount, gameScoreManager.getScores(rounds - 1) != null);
-            } else {
-                rc = new RoundCount(this,
-                        gameScoreManager,
-                        headerManager,
-                        new RowManager(rounds - 1, scoreCards, gameScoreManager),
-                        rounds, cardCount);
-            }
+            RoundCount rc = new RoundCount(this,
+                    gameScoreManager,
+                    headerManager,
+                    new RowManager(rounds - 1, scoreCards, gameScoreManager),
+                    rounds, cardCount);
             rc.setLayoutParams(params);
             grid.addView(rc);
 
@@ -118,7 +82,6 @@ public class BoerenBridge extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        gameScoreManager.saveGameData();
         PlayerManager.getInstance().savePlayerData(this);
     }
 }

@@ -1,16 +1,13 @@
 package com.robinkuiper.cardsscorekeeper.data.game.boerenBridge;
 
-
-import android.content.Context;
-
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 
 import java.util.Map;
 
 public class GameScoreManager extends ReadOnlyGameScoreManager {
 
-    public GameScoreManager(final Context context, int playerCount) {
-        super(context, playerCount);
+    public GameScoreManager(int playerCount) {
+        super(playerCount);
     }
 
     /**
@@ -38,7 +35,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         }
 
         predictedRound = new PredictedRound(playerCount, getCardCount(round), predictions);
-        saveGameData();
     }
 
     /**
@@ -54,6 +50,5 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
         ++round;
         predictedRound = null;
-        saveGameData();
     }
 }

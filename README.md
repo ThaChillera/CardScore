@@ -17,6 +17,7 @@
 
 ### Saving
 * Save game results
+* Save partial game
 
 ### Misc
 * rename app

@@ -99,13 +99,6 @@ public class PlayerManager {
         }
     }
 
-    public void replaceSelectedPlayers(long[] selectedPlayers) {
-        this.selectedPlayers.clear();
-        for(long playerId: selectedPlayers) {
-            this.selectedPlayers.add(playerId);
-        }
-    }
-
     public boolean isPlayerSelected(long playerId) {
         return selectedPlayers.contains(playerId);
     }
