@@ -33,17 +33,22 @@ public class GameSelectActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setMessage(R.string.savegame_load_request_body)
-                    .setTitle(R.string.savegame_load_request_title);
-
-            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), BoerenBridge.class);
-                    intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
-                    startActivity(intent);
-                }
-            })
-                    .setNegativeButton(R.string.cancel, null);
+                    .setTitle(R.string.savegame_load_request_title)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), BoerenBridge.class);
+                            intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), BoerenBridge.class);
+                            startActivity(intent);
+                        }
+                    });
 
             builder.create().show();
         } else {
