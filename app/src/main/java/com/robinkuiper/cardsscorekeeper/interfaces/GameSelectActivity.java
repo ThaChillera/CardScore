@@ -37,27 +37,36 @@ public class GameSelectActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getApplicationContext(), BoerenBridge.class);
-                            intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
-                            startActivity(intent);
+                            startBoerenBridge(true);
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getApplicationContext(), BoerenBridge.class);
-                            startActivity(intent);
+                            startBoerenBridge(false);
                         }
                     });
 
             builder.create().show();
         } else {
-            if (playerManager.getSelectedPlayerCount() > 1) {
-                Intent intent = new Intent(this, BoerenBridge.class);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, getString(R.string.game_select_insufficient_players), Toast.LENGTH_LONG).show();
-            }
+            startBoerenBridge();
+        }
+    }
+
+    private void startBoerenBridge() {
+        startBoerenBridge(false);
+    }
+
+    private void startBoerenBridge(boolean loadSave) {
+        if (loadSave) {
+            Intent intent = new Intent(this, BoerenBridge.class);
+            intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
+            startActivity(intent);
+        } else if (playerManager.getSelectedPlayerCount() > 1) {
+            Intent intent = new Intent(this, BoerenBridge.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(R.string.game_select_insufficient_players), Toast.LENGTH_LONG).show();
         }
     }
 
