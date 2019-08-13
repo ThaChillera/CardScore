@@ -62,6 +62,18 @@ public class RoundCount extends RelativeLayout {
         enterScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, enterScore, null));
     }
 
+    public RoundCount(Context CONTEXT, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, int roundNumber, int cardCount, boolean scoresDone) {
+        this(CONTEXT, gameScoreManager, headerManager, rowManager, roundNumber, cardCount);
+        Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
+        Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
+        predictScore.setVisibility(INVISIBLE);
+        if (scoresDone) {
+            enterScore.setVisibility(INVISIBLE);
+        } else {
+            enterScore.setVisibility(VISIBLE);
+        }
+    }
+
     private int getPlayerIndex(int i) {
         if (i >= playerManager.getSelectedPlayerCount()) {
             return i - playerManager.getSelectedPlayerCount();
