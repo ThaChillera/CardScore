@@ -29,19 +29,6 @@ public class ScoreCard extends LinearLayout {
         scoredRoundsView = findViewById(R.id.scorecard_boerenbridge_scoredrounds);
     }
 
-    /**
-     * Constructor for saved games, includes score data
-     */
-    public ScoreCard(Context context, long playerID, @Nullable Integer predictedScore, @Nullable Integer score) {
-        this(context, playerID);
-        if (predictedScore != null) {
-            setPrediction(predictedScore);
-        }
-        if (score != null) {
-            setScore(score);
-        }
-    }
-
     public long getPlayerID() {
         return playerID;
     }

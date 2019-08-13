@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
-import com.robinkuiper.cardsscorekeeper.interfaces.GameSelectActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,14 +15,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ReadOnlyGameScoreManager {
 
-    private transient final static String GAMEDATAFOLDER = "gamedata_", GAMESCOREMANAGERLOCATION = GAMEDATAFOLDER + "manager.json", SELECTEDPLAYERSLOCATION = GAMEDATAFOLDER + "selectedplayers.json";
+    private transient final static String GAMEDATAPREFIX = "gamedata_", GAMESCOREMANAGERLOCATION = GAMEDATAPREFIX + "manager.json", SELECTEDPLAYERSLOCATION = GAMEDATAPREFIX + "selectedplayers.json";
 
     transient PlayerManager playerManager = PlayerManager.getInstance();
     transient Context context;
