@@ -8,6 +8,7 @@ import android.widget.GridLayout;
 
 import com.robinkuiper.cardsscorekeeper.R;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 import com.robinkuiper.cardsscorekeeper.data.players.PlayerManager;
 import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.HeaderManager;
 import com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.headers.PlayerHeader;
@@ -20,15 +21,24 @@ import java.util.Collections;
 public class BoerenBridge extends AppCompatActivity {
 
     final private String TAG = "BoerenBridge";
+    final static public String LOADSAVEGAMEEXTRA = "LoadSaveGame";
 
     private final PlayerManager playerManager = PlayerManager.getInstance();
-    private final GameScoreManager gameScoreManager = new GameScoreManager(playerManager.getSelectedPlayerCount());
+    private GameScoreManager gameScoreManager;
 
     private HeaderManager headerManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //load save if relevant
+        boolean loadSave = getIntent().getBooleanExtra(LOADSAVEGAMEEXTRA, false);
+        if (loadSave) {
+            gameScoreManager = ReadOnlyGameScoreManager.loadGameData(getApplicationContext());
+        } else {
+            gameScoreManager = new GameScoreManager(getApplicationContext(), PlayerManager.getInstance().getSelectedPlayerCount());
+        }
 
         setContentView(R.layout.activity_boeren_bridge);
 
@@ -52,6 +62,9 @@ public class BoerenBridge extends AppCompatActivity {
         }
         headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
 
+        ArrayList<RowManager> rowManagers = new ArrayList<>();
+        ArrayList<RoundCount> roundCounts = new ArrayList<>();
+
         //add round + scores
         for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
             //create player round info
@@ -64,11 +77,13 @@ public class BoerenBridge extends AppCompatActivity {
 
             //add general round info
             int cardCount = rounds < gameScoreManager.getMaxCards() ? rounds: gameScoreManager.getMaxCards() - (rounds - gameScoreManager.getMaxCards());
+            RowManager rowManager = new RowManager(rounds - 1, scoreCards, gameScoreManager);
             RoundCount rc = new RoundCount(this,
                     gameScoreManager,
                     headerManager,
-                    new RowManager(rounds - 1, scoreCards, gameScoreManager),
+                    rowManager,
                     rounds, cardCount);
+
             rc.setLayoutParams(params);
             grid.addView(rc);
 
@@ -76,12 +91,37 @@ public class BoerenBridge extends AppCompatActivity {
             for (ScoreCard card: scoreCards) {
                 grid.addView(card);
             }
+
+            //save objects for save loading
+            rowManagers.add(rowManager);
+            roundCounts.add(rc);
+        }
+
+        //load game data into fields
+        if (loadSave) {
+            headerManager.updateScores();
+
+            for (int i = 0; i < gameScoreManager.getRound(); i++) {
+                RowManager rowManager = rowManagers.get(i);
+                rowManager.updatePredictions();
+                rowManager.updateScores();
+
+                roundCounts.get(i).changeButtonVisibility(false);
+            }
+
+            //display prediction
+            if (gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.SCORE) {
+                rowManagers.get(gameScoreManager.getRound()).updatePredictions();
+
+                roundCounts.get(gameScoreManager.getRound()).changeButtonVisibility(true);
+            }
         }
     }
 
     @Override
     public void finish() {
         super.finish();
+        gameScoreManager.saveGameData();
         PlayerManager.getInstance().savePlayerData(this);
     }
 }

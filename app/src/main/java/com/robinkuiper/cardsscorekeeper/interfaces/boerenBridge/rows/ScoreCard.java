@@ -1,6 +1,7 @@
 package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge.rows;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;

@@ -27,4 +27,7 @@
 
     <string name="editPlayer_missing_name">No name entered!</string>
     <string name="editPlayer_missing_shortname">No short name entered!</string>
+
+    <string name="savegame_load_request_title">Save game found!</string>
+    <string name="savegame_load_request_body">Do you want to load this save game?</string>
 </resources>
