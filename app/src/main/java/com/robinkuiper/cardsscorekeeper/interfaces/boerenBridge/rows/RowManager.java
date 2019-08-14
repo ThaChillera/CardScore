@@ -19,16 +19,26 @@ public class RowManager {
     public void updatePredictions() {
         Map<Long, Integer> predictions = gameScoreManager.getPredictions(roundNumber);
 
-        for (ScoreCard scoreCard: scoreCards) {
-            scoreCard.setPrediction(predictions.get(scoreCard.getPlayerID()));
+        for (ScoreCard scoreCard : scoreCards) {
+            if (predictions == null) {
+                scoreCard.removePrediction();
+            } else {
+                scoreCard.setPrediction(predictions.get(scoreCard.getPlayerID()));
+            }
         }
+
     }
 
     public void updateScores() {
         Map<Long, Integer> scores = gameScoreManager.getScores(roundNumber);
 
-        for (ScoreCard scoreCard: scoreCards) {
-            scoreCard.setScore(scores.get(scoreCard.getPlayerID()));
+        for (ScoreCard scoreCard : scoreCards) {
+            if (scores == null) {
+                scoreCard.removeScore();
+            } else {
+                scoreCard.setScore(scores.get(scoreCard.getPlayerID()));
+            }
         }
+
     }
 }

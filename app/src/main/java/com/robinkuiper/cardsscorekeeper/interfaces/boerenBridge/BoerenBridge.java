@@ -3,6 +3,9 @@ package com.robinkuiper.cardsscorekeeper.interfaces.boerenBridge;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 
@@ -27,6 +30,9 @@ public class BoerenBridge extends AppCompatActivity {
     private GameScoreManager gameScoreManager;
 
     private HeaderManager headerManager;
+
+    private ArrayList<RowManager> rowManagers = new ArrayList<>();
+    private ArrayList<RoundCount> roundCounts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +67,6 @@ public class BoerenBridge extends AppCompatActivity {
             playerHeaders.add(playerHeader);
         }
         headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
-
-        ArrayList<RowManager> rowManagers = new ArrayList<>();
-        ArrayList<RoundCount> roundCounts = new ArrayList<>();
 
         //add round + scores
         for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
@@ -106,15 +109,64 @@ public class BoerenBridge extends AppCompatActivity {
                 rowManager.updatePredictions();
                 rowManager.updateScores();
 
-                roundCounts.get(i).changeButtonVisibility(false);
+                roundCounts.get(i).changeButtonVisibility(RoundCount.ButtonVisible.NONE);
             }
 
             //display prediction
             if (gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.SCORE) {
                 rowManagers.get(gameScoreManager.getRound()).updatePredictions();
 
-                roundCounts.get(gameScoreManager.getRound()).changeButtonVisibility(true);
+                roundCounts.get(gameScoreManager.getRound()).changeButtonVisibility(RoundCount.ButtonVisible.SCORE);
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.game, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.undo_button:
+                undo();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void undo() {
+        //if this is the first round with no predictions made, just exit the activity
+        if (gameScoreManager.getRound() == 0 && gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
+            super.onBackPressed();
+            return;
+        }
+
+        ReadOnlyGameScoreManager.EntryType undoing = gameScoreManager.getLastEntry();
+
+        //undo the data
+        gameScoreManager.undo();
+
+        //undo the visuals
+        headerManager.updateScores();
+
+        RowManager rowManager = rowManagers.get(gameScoreManager.getRound());
+        RoundCount roundCount = roundCounts.get(gameScoreManager.getRound());
+
+        switch (undoing) {
+            case PREDICTION:
+                rowManager.updatePredictions();
+                roundCount.changeButtonVisibility(RoundCount.ButtonVisible.PREDICT);
+                break;
+            case SCORE:
+                rowManager.updateScores();
+                roundCount.changeButtonVisibility(RoundCount.ButtonVisible.SCORE);
+                break;
         }
     }
 

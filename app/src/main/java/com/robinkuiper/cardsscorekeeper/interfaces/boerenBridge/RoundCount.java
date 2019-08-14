@@ -62,20 +62,35 @@ public class RoundCount extends RelativeLayout {
         enterScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, enterScore, null));
     }
 
+    public enum ButtonVisible {
+        PREDICT, SCORE, NONE
+    }
+
     /**
      * Change button visibility.
      * Hides the predict button, and possibly the enter score button.
-     * Used when loading a save.
+     * Used when loading a save or undo-ing.
      *
-     * @param enterScoreVisible Whether to show the enter score button
+     * @param buttonVisible What the button status should be
      */
-    void changeButtonVisibility(boolean enterScoreVisible) {
+    void changeButtonVisibility(ButtonVisible buttonVisible) {
         Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
-        predictScore.setVisibility(INVISIBLE);
+        Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
 
-        if (enterScoreVisible) {
-            Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
-            enterScore.setVisibility(VISIBLE);
+        switch (buttonVisible) {
+            case PREDICT:
+                enterScore.setVisibility(GONE);
+                predictScore.setVisibility(VISIBLE);
+                break;
+            case SCORE:
+                predictScore.setVisibility(GONE);
+                enterScore.setVisibility(VISIBLE);
+                break;
+            case NONE:
+            default:
+                predictScore.setVisibility(GONE);
+                enterScore.setVisibility(GONE);
+                break;
         }
     }
 

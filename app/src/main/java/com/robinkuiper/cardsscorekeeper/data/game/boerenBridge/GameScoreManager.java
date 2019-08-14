@@ -3,6 +3,7 @@ package com.robinkuiper.cardsscorekeeper.data.game.boerenBridge;
 
 import android.content.Context;
 
+import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
 import com.robinkuiper.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 
 import java.util.Map;
@@ -54,6 +55,23 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
         ++round;
         predictedRound = null;
+        saveGameData();
+    }
+
+    public void undo() {
+        if (getLastEntry() == EntryType.PREDICTION) {
+            predictedRound = null;
+        } else {
+            FinishedRound lastRound = finishedRounds.get(finishedRounds.size() - 1);
+
+            //remove last added score from finishedround
+            finishedRounds.remove(lastRound);
+
+            --round;
+            //get old predicted round
+            predictedRound = new PredictedRound(playerCount, getCardCount(round), lastRound.getPredictions());
+        }
+
         saveGameData();
     }
 }

@@ -30,4 +30,6 @@
 
     <string name="savegame_load_request_title">Save game found!</string>
     <string name="savegame_load_request_body">Do you want to load this save game?</string>
+
+    <string name="undo_button">Undo Input</string>
 </resources>
