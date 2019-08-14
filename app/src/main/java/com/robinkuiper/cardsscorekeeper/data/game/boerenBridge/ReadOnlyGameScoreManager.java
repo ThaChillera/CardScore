@@ -1,6 +1,7 @@
 package com.robinkuiper.cardsscorekeeper.data.game.boerenBridge;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -65,16 +66,18 @@ public class ReadOnlyGameScoreManager {
         return round <= maxCards ? round : maxCards - (round - maxCards);
     }
 
+    @Nullable
     public Map<Long, Integer> getPredictions(int round) {
         if (round >= 0 && round < this.round) {
             return finishedRounds.get(round).getPredictions();
-        } else if (round == this.round) {
+        } else if (round == this.round && predictedRound != null) {
             return predictedRound.getPredictions();
         } else {
             return null;
         }
     }
 
+    @Nullable
     public Map<Long, Integer> getScores(int round) {
         if (round >= 0 && round < this.round) {
             return finishedRounds.get(round).getScores();
@@ -113,6 +116,10 @@ public class ReadOnlyGameScoreManager {
 
     public enum EntryType {
         PREDICTION, SCORE
+    }
+
+    public GameScoreManager.EntryType getLastEntry() {
+        return getNextEntry() == EntryType.PREDICTION ? EntryType.SCORE : EntryType.PREDICTION;
     }
 
     public GameScoreManager.EntryType getNextEntry() {

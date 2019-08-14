@@ -37,7 +37,15 @@ public class ScoreCard extends LinearLayout {
         predictedRoundsView.setText(Integer.toString(score));
     }
 
+    void removePrediction() {
+        predictedRoundsView.setText(null);
+    }
+
     void setScore(int score) {
         scoredRoundsView.setText(Integer.toString(score));
+    }
+
+    void removeScore() {
+        scoredRoundsView.setText(null);
     }
 }
