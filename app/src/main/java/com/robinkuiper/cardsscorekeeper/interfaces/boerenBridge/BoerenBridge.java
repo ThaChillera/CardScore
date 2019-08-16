@@ -153,7 +153,6 @@ public class BoerenBridge extends AppCompatActivity {
     public void undo() {
         //if this is the first round with no predictions made, do nothing
         if (gameScoreManager.getRound() == 0 && gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
-            super.onBackPressed();
             return;
         }
 
