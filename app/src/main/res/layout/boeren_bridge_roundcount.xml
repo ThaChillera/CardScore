@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/predict_score"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/roundcount_boerenbridge_enterscore"

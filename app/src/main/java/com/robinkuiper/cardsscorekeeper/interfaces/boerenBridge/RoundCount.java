@@ -37,6 +37,10 @@ public class RoundCount extends RelativeLayout {
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
     final private PlayerManager playerManager = PlayerManager.getInstance();
+    final private GameScoreManager gameScoreManager;
+    final private HeaderManager headerManager;
+    final private RowManager rowManager;
+    private RoundCount nextRound;
 
     final int STARTINGPLAYER;
 
@@ -44,7 +48,9 @@ public class RoundCount extends RelativeLayout {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
         this.STARTINGPLAYER = (roundNumber -1) % playerManager.getSelectedPlayerCount();
-
+        this.gameScoreManager = gameScoreManager;
+        this.headerManager = headerManager;
+        this.rowManager = rowManager;
 
         LayoutInflater inflater = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.boeren_bridge_roundcount, this);
@@ -58,11 +64,15 @@ public class RoundCount extends RelativeLayout {
         Button predictScore = findViewById(R.id.roundcount_boerenbridge_predictscore);
         Button enterScore = findViewById(R.id.roundcount_boerenbridge_enterscore);
 
-        predictScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, predictScore, enterScore));
-        enterScore.setOnClickListener(new ButtonOnClickListener(gameScoreManager, headerManager, rowManager, enterScore, null));
+        predictScore.setOnClickListener(new ButtonOnClickListener());
+        enterScore.setOnClickListener(new ButtonOnClickListener());
     }
 
-    public enum ButtonVisible {
+    public void setNextRound(RoundCount nextRound) {
+        this.nextRound = nextRound;
+    }
+
+    enum ButtonVisible {
         PREDICT, SCORE, NONE
     }
 
@@ -103,20 +113,6 @@ public class RoundCount extends RelativeLayout {
     }
 
     private class ButtonOnClickListener implements OnClickListener {
-        GameScoreManager gameScoreManager;
-        HeaderManager headerManager;
-        RowManager rowManager;
-
-        //Used to track which button should disappear & appear when done with current operation
-        Button buttonOld, buttonNew;
-
-        ButtonOnClickListener(GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, Button buttonOld, Button buttonNew) {
-            this.gameScoreManager = gameScoreManager;
-            this.headerManager = headerManager;
-            this.rowManager = rowManager;
-            this.buttonOld = buttonOld;
-            this.buttonNew = buttonNew;
-        }
 
         @Override
         public void onClick(View v) {
@@ -126,14 +122,14 @@ public class RoundCount extends RelativeLayout {
             AlertDialog.Builder builder = new AlertDialog.Builder(CONTEXT)
                     .setView(linearLayout);
 
-            if (buttonNew != null) {
+            if (gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
                 builder.setTitle(R.string.predict_score);
             } else {
                 builder.setTitle(R.string.enter_score);
             }
 
             // Add the buttons
-            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout, gameScoreManager, headerManager, rowManager, buttonOld, buttonNew))
+            builder.setPositiveButton(R.string.ok, new DialogPositiveOnClickListener(linearLayout))
                     .setNegativeButton(R.string.cancel, null);
 
             final AlertDialog dialog = builder.show();
@@ -190,20 +186,9 @@ public class RoundCount extends RelativeLayout {
 
     private class DialogPositiveOnClickListener implements DialogInterface.OnClickListener {
         LinearLayout linearLayout;
-        GameScoreManager gameScoreManager;
-        HeaderManager headerManager;
-        RowManager rowManager;
 
-        //Used to track which button should disappear & appear when done with current operation
-        Button buttonOld, buttonNew;
-
-        public DialogPositiveOnClickListener(LinearLayout linearLayout, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, Button buttonOld, Button buttonNew) {
+        public DialogPositiveOnClickListener(LinearLayout linearLayout) {
             this.linearLayout = linearLayout;
-            this.gameScoreManager = gameScoreManager;
-            this.headerManager = headerManager;
-            this.rowManager = rowManager;
-            this.buttonOld = buttonOld;
-            this.buttonNew = buttonNew;
         }
 
         @Override
@@ -240,7 +225,7 @@ public class RoundCount extends RelativeLayout {
                 }
                 totalValue += value;
             }
-            if (gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.SCORE && totalValue != gameScoreManager.getCardCount(gameScoreManager.getRound())) {
+            if (gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.SCORE && totalValue != gameScoreManager.getCardCount(gameScoreManager.getRound())) {
                 Toast toast = Toast.makeText(CONTEXT, CONTEXT.getResources().getString(R.string.invalid_score), Toast.LENGTH_LONG);
                 toast.show();
                 return;
@@ -254,22 +239,21 @@ public class RoundCount extends RelativeLayout {
             }
 
             //if this entry is score, update views && activate next round
-            if (gameScoreManager.getNextEntry() == GameScoreManager.EntryType.SCORE) {
+            if (gameScoreManager.getNextEntryType() == GameScoreManager.EntryType.SCORE) {
                 gameScoreManager.enterScores(inputMap);
 
                 headerManager.updateScores();
                 rowManager.updateScores();
-                //todo: activate buttons of next round
+                changeButtonVisibility(ButtonVisible.NONE);
+                nextRound.changeButtonVisibility(ButtonVisible.PREDICT);
             } else {
                 gameScoreManager.enterPredictions(inputMap);
-
                 rowManager.updatePredictions();
+                changeButtonVisibility(ButtonVisible.SCORE);
             }
 
             //change buttons
-            buttonOld.setVisibility(GONE);
-            if (buttonNew != null)
-                buttonNew.setVisibility(VISIBLE);
+            changeButtonVisibility(gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.SCORE ? ButtonVisible.SCORE : ButtonVisible.NONE);
         }
     }
 

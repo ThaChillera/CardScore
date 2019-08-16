@@ -20,7 +20,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
      * @param values Tuple, key = playerID, value = result
      */
     public void enterValues(Map<Long, Integer> values) {
-        switch (getNextEntry()) {
+        switch (getNextEntryType()) {
             case PREDICTION:
                 enterPredictions(values);
             case SCORE:
@@ -59,7 +59,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
     }
 
     public void undo() {
-        if (getLastEntry() == EntryType.PREDICTION) {
+        if (getLastEntryType() == EntryType.PREDICTION) {
             predictedRound = null;
         } else {
             FinishedRound lastRound = finishedRounds.get(finishedRounds.size() - 1);
