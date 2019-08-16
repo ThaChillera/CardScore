@@ -118,11 +118,11 @@ public class ReadOnlyGameScoreManager {
         PREDICTION, SCORE
     }
 
-    public GameScoreManager.EntryType getLastEntry() {
-        return getNextEntry() == EntryType.PREDICTION ? EntryType.SCORE : EntryType.PREDICTION;
+    public GameScoreManager.EntryType getLastEntryType() {
+        return getNextEntryType() == EntryType.PREDICTION ? EntryType.SCORE : EntryType.PREDICTION;
     }
 
-    public GameScoreManager.EntryType getNextEntry() {
+    public GameScoreManager.EntryType getNextEntryType() {
         return predictedRound == null ? GameScoreManager.EntryType.PREDICTION : GameScoreManager.EntryType.SCORE;
     }
 

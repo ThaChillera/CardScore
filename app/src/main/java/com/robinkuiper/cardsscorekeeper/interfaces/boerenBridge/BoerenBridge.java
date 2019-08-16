@@ -69,6 +69,7 @@ public class BoerenBridge extends AppCompatActivity {
         headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
 
         //add round + scores
+        RoundCount previousRound = null;
         for (int rounds = 1; rounds < gameScoreManager.getAmountOfRounds() + 1; rounds++) {
             //create player round info
             ArrayList<ScoreCard> scoreCards = new ArrayList<>();
@@ -98,26 +99,35 @@ public class BoerenBridge extends AppCompatActivity {
             //save objects for save loading
             rowManagers.add(rowManager);
             roundCounts.add(rc);
+
+            //add this roundCount to previous roundCount
+            if (previousRound != null) {
+                previousRound.setNextRound(rc);
+            }
+            previousRound = rc;
         }
 
         //load game data into fields
         if (loadSave) {
             headerManager.updateScores();
 
+            //display finished rounds
             for (int i = 0; i < gameScoreManager.getRound(); i++) {
                 RowManager rowManager = rowManagers.get(i);
                 rowManager.updatePredictions();
                 rowManager.updateScores();
-
-                roundCounts.get(i).changeButtonVisibility(RoundCount.ButtonVisible.NONE);
             }
 
-            //display prediction
-            if (gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.SCORE) {
+            //display prediction and show enter score button
+            if (gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.SCORE) {
                 rowManagers.get(gameScoreManager.getRound()).updatePredictions();
 
                 roundCounts.get(gameScoreManager.getRound()).changeButtonVisibility(RoundCount.ButtonVisible.SCORE);
+            } else { //show predict button
+                roundCounts.get(gameScoreManager.getRound()).changeButtonVisibility(RoundCount.ButtonVisible.PREDICT);
             }
+        } else {
+            roundCounts.get(0).changeButtonVisibility(RoundCount.ButtonVisible.PREDICT);
         }
     }
 
@@ -141,13 +151,13 @@ public class BoerenBridge extends AppCompatActivity {
     }
 
     public void undo() {
-        //if this is the first round with no predictions made, just exit the activity
-        if (gameScoreManager.getRound() == 0 && gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
+        //if this is the first round with no predictions made, do nothing
+        if (gameScoreManager.getRound() == 0 && gameScoreManager.getNextEntryType() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
             super.onBackPressed();
             return;
         }
 
-        ReadOnlyGameScoreManager.EntryType undoing = gameScoreManager.getLastEntry();
+        ReadOnlyGameScoreManager.EntryType undoing = gameScoreManager.getLastEntryType();
 
         //undo the data
         gameScoreManager.undo();
@@ -155,8 +165,9 @@ public class BoerenBridge extends AppCompatActivity {
         //undo the visuals
         headerManager.updateScores();
 
-        RowManager rowManager = rowManagers.get(gameScoreManager.getRound());
-        RoundCount roundCount = roundCounts.get(gameScoreManager.getRound());
+        int roundNumber = gameScoreManager.getRound();
+        RowManager rowManager = rowManagers.get(roundNumber);
+        RoundCount roundCount = roundCounts.get(roundNumber);
 
         switch (undoing) {
             case PREDICTION:
@@ -166,6 +177,7 @@ public class BoerenBridge extends AppCompatActivity {
             case SCORE:
                 rowManager.updateScores();
                 roundCount.changeButtonVisibility(RoundCount.ButtonVisible.SCORE);
+                roundCounts.get(roundNumber + 1).changeButtonVisibility(RoundCount.ButtonVisible.NONE);
                 break;
         }
     }
