@@ -143,7 +143,6 @@ public class BoerenBridge extends AppCompatActivity {
     public void undo() {
         //if this is the first round with no predictions made, just exit the activity
         if (gameScoreManager.getRound() == 0 && gameScoreManager.getNextEntry() == ReadOnlyGameScoreManager.EntryType.PREDICTION) {
-            super.onBackPressed();
             return;
         }
 
