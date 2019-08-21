@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.robinkuiper.cardsscorekeeper">
+    package="io.github.thachillera.cardsscorekeeper">
 
     <application
         android:allowBackup="true"
@@ -10,14 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".interfaces.boerenBridge.BoerenBridge"
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".interfaces.player.PlayerSelectActivity"
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity"
             android:label="@string/title_activity_player_select"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".interfaces.GameSelectActivity"
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.GameSelectActivity"
             android:label="@string/title_activity_game_select"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".interfaces.player.EditPlayerActivity"></activity>
+        <activity android:name="io.github.thachillera.cardsscorekeeper.interfaces.player.EditPlayerActivity"></activity>
     </application>
 
 </manifest>
