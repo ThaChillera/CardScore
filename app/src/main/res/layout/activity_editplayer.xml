@@ -5,7 +5,7 @@
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".interfaces.player.EditPlayerActivity">
+    tools:context="io.github.thachillera.cardsscorekeeper.interfaces.player.EditPlayerActivity">
 
     <TextView
         android:id="@+id/textView2"
