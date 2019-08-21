@@ -8,25 +8,37 @@
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:ignore="MissingConstraints">
 
-        <android.support.v4.widget.NestedScrollView
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
-            <GridLayout
-                android:id="@+id/boeren_bridge_gridlayout"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/boeren_bridge_player_headers"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:background="@color/colorPrimaryDark">
 
+            </LinearLayout>
 
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </GridLayout>
-        </android.support.v4.widget.NestedScrollView>
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@id/boeren_bridge_player_headers"
+                android:fillViewport="true">
+
+                <GridLayout
+                    android:id="@+id/boeren_bridge_gridlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimaryDark" />
+
+            </android.support.v4.widget.NestedScrollView>
+
+        </RelativeLayout>
     </HorizontalScrollView>
 
 </android.support.constraint.ConstraintLayout>
