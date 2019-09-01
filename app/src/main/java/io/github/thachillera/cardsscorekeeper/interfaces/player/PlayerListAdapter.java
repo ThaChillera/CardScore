@@ -44,19 +44,19 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
         CheckBox button = new CheckBox(viewGroup.getContext());
         MyViewHolder vh = new MyViewHolder(button);
 
-        vh.updateContents(PLAYERMANAGER.getAllPlayerIds()[i]);
+        vh.updateContents(PLAYERMANAGER.getActivePlayerIds()[i]);
 
         return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
-        viewHolder.updateContents(PLAYERMANAGER.getAllPlayerIds()[i]);
+        viewHolder.updateContents(PLAYERMANAGER.getActivePlayerIds()[i]);
     }
 
     @Override
     public int getItemCount() {
-        return PLAYERMANAGER.getAllPlayersCount();
+        return PLAYERMANAGER.getActivePlayersCount();
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {

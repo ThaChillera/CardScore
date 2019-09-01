@@ -14,7 +14,6 @@ import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 public class PlayerSelectActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

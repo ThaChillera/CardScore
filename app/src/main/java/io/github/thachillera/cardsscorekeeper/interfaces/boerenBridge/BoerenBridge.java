@@ -200,5 +200,8 @@ public class BoerenBridge extends AppCompatActivity {
         super.finish();
         gameScoreManager.saveGameData();
         PlayerManager.getInstance().savePlayerData(this);
+
+        //deselect deleted players that are selected (due to loading a savegame)
+        PlayerManager.getInstance().deselectDeletedPlayers();
     }
 }
