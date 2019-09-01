@@ -6,8 +6,13 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Space;
 
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
@@ -48,25 +53,34 @@ public class BoerenBridge extends AppCompatActivity {
 
         setContentView(R.layout.activity_boeren_bridge);
 
-        GridLayout grid = findViewById(R.id.boeren_bridge_gridlayout);
-
         float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, this.getResources().getDisplayMetrics());
         float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, this.getResources().getDisplayMetrics());
-
         LayoutParams params = new LayoutParams((int) width, (int) height);
 
-        //add players
-        grid.setColumnCount(playerManager.getSelectedPlayerCount() + 1);
+        LinearLayout playerHeaderLinearLayout = findViewById(R.id.boeren_bridge_player_headers);
+
+        //add empty square
+        {
+            RelativeLayout space = new RelativeLayout(getApplicationContext());
+            space = (RelativeLayout) getLayoutInflater().inflate(R.layout.boeren_bridge_player_header_space, space);
+            space.setLayoutParams(params);
+            playerHeaderLinearLayout.addView(space);
+        }
 
         //add player headers
         ArrayList<PlayerHeader> playerHeaders = new ArrayList<>();
         for (long playerID: playerManager.getSelectedPlayers()) {
             PlayerHeader playerHeader = new PlayerHeader(this, playerManager.getPlayerName(playerID), playerID);
             playerHeader.setLayoutParams(params);
-            grid.addView(playerHeader);
+            playerHeaderLinearLayout.addView(playerHeader);
             playerHeaders.add(playerHeader);
         }
         headerManager = new HeaderManager(Collections.unmodifiableList(playerHeaders), gameScoreManager);
+
+        GridLayout grid = findViewById(R.id.boeren_bridge_gridlayout);
+
+        //add players
+        grid.setColumnCount(playerManager.getSelectedPlayerCount() + 1);
 
         //add round + scores
         RoundCount previousRound = null;
