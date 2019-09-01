@@ -2,7 +2,10 @@
 
 This app is used to track the score in the game 'Boerenbridge'.
 
-##Game rules:
+## Project management
+the 'master' branch is used as a stable candidate, the 'release' branch is used for releases.
+
+## Game rules:
 This game is played with a full 52 card french-suited deck.
 Players are at all times allowed to see their own cards, but may hide their cards from their opponents.
 
