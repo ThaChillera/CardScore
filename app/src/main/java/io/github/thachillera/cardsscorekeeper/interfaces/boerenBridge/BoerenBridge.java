@@ -61,15 +61,10 @@ public class BoerenBridge extends AppCompatActivity {
 
         //add empty square
         {
-            RelativeLayout space = (RelativeLayout) getLayoutInflater().inflate(R.layout.boeren_bridge_player_header_space, playerHeaderLinearLayout);
-//            float oneDP = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, this.getResources().getDisplayMetrics());
-//
-//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (width - oneDP), (int) (height - oneDP));
-//
-//            int oneDPint = (int) oneDP;
-//            layoutParams.setMargins(oneDPint, oneDPint, oneDPint, oneDPint);
+            RelativeLayout space = new RelativeLayout(getApplicationContext());
+            space = (RelativeLayout) getLayoutInflater().inflate(R.layout.boeren_bridge_player_header_space, space);
             space.setLayoutParams(params);
-//            playerHeaderLinearLayout.addView(space);
+            playerHeaderLinearLayout.addView(space);
         }
 
         //add player headers
