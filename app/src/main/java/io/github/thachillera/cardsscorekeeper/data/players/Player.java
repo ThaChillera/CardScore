@@ -7,6 +7,8 @@ class Player {
     //max 3 chars
     private String shortName;
 
+    private boolean deleted = false;
+
     private int wins = 0;
     private int losses = 0;
 
@@ -35,5 +37,13 @@ class Player {
     void editPlayer(String name, String shortName) {
         this.name = name;
         this.shortName = shortName;
+    }
+
+    boolean isDeleted() {
+        return deleted;
+    }
+
+    void delete() {
+        deleted = true;
     }
 }

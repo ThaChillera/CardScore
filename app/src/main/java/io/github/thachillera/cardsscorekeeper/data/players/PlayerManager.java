@@ -36,6 +36,10 @@ public class PlayerManager {
         return null;
     }
 
+    public int getAllPlayersCount() {
+        return players.size();
+    }
+
     public long[] getAllPlayerIds() {
         long[] ids = new long[getAllPlayersCount()];
         for (int i = 0; i < getAllPlayersCount(); i++) {
@@ -44,8 +48,26 @@ public class PlayerManager {
         return ids;
     }
 
-    public int getAllPlayersCount() {
-        return players.size();
+    public int getActivePlayersCount() {
+        int playercount = 0;
+        for (Player player: players) {
+            if (!player.isDeleted()) {
+                ++playercount;
+            }
+        }
+        return playercount;
+    }
+
+    public long[] getActivePlayerIds() {
+        long[] ids = new long[getActivePlayersCount()];
+        int i = 0;
+        for (Player player: players) {
+            if (!player.isDeleted()) {
+                ids[i] = player.getId();
+                ++i;
+            }
+        }
+        return ids;
     }
 
     public int getSelectedPlayerCount() {
@@ -84,7 +106,7 @@ public class PlayerManager {
     }
 
     public void deletePlayer(long playerId) {
-        players.remove(getPlayer(playerId));
+        getPlayer(playerId).delete();
     }
 
     public void selectPlayer(long playerId) {
@@ -103,6 +125,15 @@ public class PlayerManager {
         this.selectedPlayers.clear();
         for(long playerId: selectedPlayers) {
             this.selectedPlayers.add(playerId);
+        }
+    }
+
+    public void deselectDeletedPlayers() {
+        ArrayList<Long> selectedPlayersCopy = (ArrayList<Long>) selectedPlayers.clone();
+        for(long playerId: selectedPlayersCopy) {
+            if (getPlayer(playerId).isDeleted()) {
+                selectedPlayers.remove(playerId);
+            }
         }
     }
 
