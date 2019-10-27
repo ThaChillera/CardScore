@@ -92,7 +92,7 @@ public class PlayerManager {
         return getPlayer(playerId).getShortName();
     }
 
-    public void addPlayer(String name, String shortName) {
+    public void addPlayer(String name, String shortName) throws IllegalArgumentException {
         long id = System.currentTimeMillis();
         while (getPlayer(id) != null) {
             id = System.currentTimeMillis();
@@ -101,7 +101,7 @@ public class PlayerManager {
         players.add(new Player(id, name, shortName));
     }
 
-    public void editPlayer(long playerId, String name, String shortName) {
+    public void editPlayer(long playerId, String name, String shortName) throws IllegalArgumentException {
         getPlayer(playerId).editPlayer(name, shortName);
     }
 
@@ -153,8 +153,12 @@ public class PlayerManager {
 
         //Junk Players
         if (BuildConfig.DEBUG && players.isEmpty()) {
-            addPlayer("Test Player 1", "T1");
-            addPlayer("Test PLayer 2", "T2");
+            try {
+                addPlayer("Test Player 1", "T1");
+                addPlayer("Test Player 2", "T2");
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -12,13 +12,25 @@ class Player {
     private int wins = 0;
     private int losses = 0;
 
-    Player(long id, String name, String shortName) {
-        if (name.length() == 0 || shortName.length() == 0 || shortName.length() > 3) {
-            throw new IllegalArgumentException();
+    Player(long id, String name, String shortName) throws IllegalArgumentException {
+        this.id = id;
+        setName(name);
+        setShortName(shortName);
+    }
+
+    private void setName(String name) throws IllegalArgumentException {
+        if (name == null || name.length() == 0) {
+            throw new IllegalArgumentException("No or missing name");
         }
 
-        this.id = id;
         this.name = name;
+    }
+
+    private void setShortName(String shortName) throws IllegalArgumentException {
+        if (shortName == null || shortName.length() == 0 || shortName.length() > 3) {
+            throw new IllegalArgumentException("No, missing or too long name");
+        }
+
         this.shortName = shortName;
     }
 
@@ -34,9 +46,9 @@ class Player {
         return shortName;
     }
 
-    void editPlayer(String name, String shortName) {
-        this.name = name;
-        this.shortName = shortName;
+    void editPlayer(String name, String shortName) throws IllegalArgumentException {
+        setName(name);
+        setShortName(shortName);
     }
 
     boolean isDeleted() {
