@@ -1,4 +1,4 @@
-package com.github.cardsscorekeeper;
+package io.github.thachillera;
 
 import org.junit.Test;
 
