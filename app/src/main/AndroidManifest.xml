@@ -18,7 +18,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name="io.github.thachillera.cardsscorekeeper.interfaces.GameSelectActivity"
-            android:label="@string/title_activity_game_select"
+            android:label="@string/app_name_short"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

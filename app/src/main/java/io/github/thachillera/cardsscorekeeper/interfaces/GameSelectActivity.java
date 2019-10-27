@@ -23,6 +23,7 @@ public class GameSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameselect);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_activity_game_select);
         setSupportActionBar(toolbar);
 
         playerManager.loadPlayerData(this);
