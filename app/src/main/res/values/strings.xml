@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Cards Score Keeper</string>
+    <string name="app_name_short">CSK</string>
     <string name="card_count">Card Count:</string>
     <string name="card_count_info">Card Count</string>
     <string name="round_number_info">Round Number</string>
