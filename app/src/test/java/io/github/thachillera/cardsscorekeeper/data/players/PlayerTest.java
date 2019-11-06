@@ -2,18 +2,17 @@ package io.github.thachillera.cardsscorekeeper.data.players;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class PlayerTest {
 
-    private final int ID = 0;
-    private final String NAME = "Player Name";
-    private final String SHORTNAME = "PSN";
+    public static final int ID = 0;
+    public static final String NAME = "Player Name";
+    public static final String SHORTNAME = "SN";
 
-    private final String EDITEDNAME = "Edited Player Name";
-    private final String EDITEDSHORTNAME = "SN2";
+    public static final String EDITEDNAME = "Edited Player Name";
+    public static final String EDITEDSHORTNAME = "SN2";
 
     Player player;
 
@@ -59,7 +58,7 @@ public class PlayerTest {
      * Badweather tests
      */
 
-    private final String INVALIDSHORTNAME = "Four";
+    public static final String INVALIDSHORTNAME = "Four";
 
     @Test(expected = IllegalArgumentException.class)
     public void createPlayerNoName() {

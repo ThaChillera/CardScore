@@ -6,6 +6,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.thachillera.cardsscorekeeper.BuildConfig;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.InvalidPlayerIdException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.NonExistantPlayerException;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,15 +18,45 @@ import java.util.Arrays;
 
 public class PlayerManager {
     private static final String PLAYERDATALOCATION = "playerdata.json";
-    private static final PlayerManager ourInstance = new PlayerManager();
-    private ArrayList<Player> players;
+    private static PlayerManager ourInstance = new PlayerManager();
+    private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Long> selectedPlayers = new ArrayList<>();
 
     public static PlayerManager getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new PlayerManager();
+        }
         return ourInstance;
     }
 
     private PlayerManager() {
+    }
+
+    public void addPlayer(String name, String shortName) throws IllegalArgumentException {
+        long id = System.currentTimeMillis();
+        while (getPlayer(id) != null) {
+            id = System.currentTimeMillis();
+        }
+
+        players.add(new Player(id, name, shortName));
+    }
+
+    private boolean isValidId(long playerId) {
+        return playerId > 0;
+    }
+
+
+    private void validatePlayerIdInput(long playerId) {
+        if (!isValidId(playerId)) {
+            throw new InvalidPlayerIdException();
+        } else if (getPlayer(playerId) == null) {
+            throw new NonExistantPlayerException();
+        }
+    }
+
+    public void editPlayer(long playerId, String name, String shortName) throws IllegalArgumentException {
+        validatePlayerIdInput(playerId);
+        getPlayer(playerId).editPlayer(name, shortName);
     }
 
     private Player getPlayer(long playerId) {
@@ -70,42 +102,22 @@ public class PlayerManager {
         return ids;
     }
 
-    public int getSelectedPlayerCount() {
-        return selectedPlayers.size();
-    }
-
-    public long[] getSelectedPlayers() {
-        long[] returnValues = new long[getSelectedPlayerCount()];
-
-        for (int i = 0; i < selectedPlayers.size(); i++) {
-            returnValues[i] = selectedPlayers.get(i);
-        }
-
-        return returnValues;
-    }
-
     public String getPlayerName(long playerId) {
+        validatePlayerIdInput(playerId);
         return getPlayer(playerId).getName();
     }
 
     public String getPlayerShortName(long playerId) {
+        validatePlayerIdInput(playerId);
         return getPlayer(playerId).getShortName();
     }
 
-    public void addPlayer(String name, String shortName) throws IllegalArgumentException {
-        long id = System.currentTimeMillis();
-        while (getPlayer(id) != null) {
-            id = System.currentTimeMillis();
-        }
-
-        players.add(new Player(id, name, shortName));
-    }
-
-    public void editPlayer(long playerId, String name, String shortName) throws IllegalArgumentException {
-        getPlayer(playerId).editPlayer(name, shortName);
-    }
-
     public void deletePlayer(long playerId) {
+        validatePlayerIdInput(playerId);
+
+        if (isPlayerSelected(playerId)) {
+            deselectPlayer(playerId);
+        }
         getPlayer(playerId).delete();
     }
 
@@ -139,6 +151,20 @@ public class PlayerManager {
 
     public boolean isPlayerSelected(long playerId) {
         return selectedPlayers.contains(playerId);
+    }
+
+    public int getSelectedPlayerCount() {
+        return selectedPlayers.size();
+    }
+
+    public long[] getSelectedPlayers() {
+        long[] returnValues = new long[getSelectedPlayerCount()];
+
+        for (int i = 0; i < selectedPlayers.size(); i++) {
+            returnValues[i] = selectedPlayers.get(i);
+        }
+
+        return returnValues;
     }
 
     public void loadPlayerData(Context context) {
