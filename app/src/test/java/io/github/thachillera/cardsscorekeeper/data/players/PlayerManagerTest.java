@@ -7,10 +7,17 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.DeletedPlayerException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.DeselectPlayerException;
 import io.github.thachillera.cardsscorekeeper.data.players.exceptions.InvalidPlayerIdException;
 import io.github.thachillera.cardsscorekeeper.data.players.exceptions.NonExistantPlayerException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.ReselectPlayerException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class PlayerManagerTest {
 
@@ -144,9 +151,6 @@ public class PlayerManagerTest {
         playerManager.selectPlayer(selectedPlayer);
         playerManager.deselectPlayer(selectedPlayer);
         assertEquals("Player not deselected" ,0, playerManager.getSelectedPlayers().length);
-
-        playerManager.deselectPlayer(selectedPlayer);
-        assertEquals("Player deselect fails on second deselect", 0, playerManager.getSelectedPlayers().length);
     }
 
     @Test
@@ -305,14 +309,14 @@ public class PlayerManagerTest {
         playerManager.selectPlayer(NONEXISTINGPLAYER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = ReselectPlayerException.class)
     public void selectPlayerAlreadySelected() {
         long playerId = playerManager.getActivePlayerIds()[0];
         playerManager.selectPlayer(playerId);
         playerManager.selectPlayer(playerId);
     }
 
-    @Test(expected = IllegalArgumentException.class) //figure out what exception to throw
+    @Test(expected = DeletedPlayerException.class) //figure out what exception to throw
     public void selectPlayerInactivePlayer() {
         long playerId = playerManager.getActivePlayerIds()[0];
         playerManager.deletePlayer(playerId);
@@ -330,13 +334,13 @@ public class PlayerManagerTest {
         playerManager.deselectPlayer(NONEXISTINGPLAYER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = DeselectPlayerException.class)
     public void deselectPlayerNotSelected() {
         long playerId = playerManager.getActivePlayerIds()[0];
         playerManager.deselectPlayer(playerId);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = DeletedPlayerException.class)
     public void deselectPlayerInactivePlayer() {
         long playerId = playerManager.getActivePlayerIds()[0];
         playerManager.deletePlayer(playerId);

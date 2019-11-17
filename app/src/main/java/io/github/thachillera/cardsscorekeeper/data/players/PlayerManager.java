@@ -1,13 +1,11 @@
 package io.github.thachillera.cardsscorekeeper.data.players;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.thachillera.cardsscorekeeper.BuildConfig;
-import io.github.thachillera.cardsscorekeeper.data.players.exceptions.InvalidPlayerIdException;
-import io.github.thachillera.cardsscorekeeper.data.players.exceptions.NonExistantPlayerException;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,6 +13,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import io.github.thachillera.cardsscorekeeper.BuildConfig;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.DeletedPlayerException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.DeselectPlayerException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.InvalidPlayerIdException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.NonExistantPlayerException;
+import io.github.thachillera.cardsscorekeeper.data.players.exceptions.ReselectPlayerException;
 
 public class PlayerManager {
     private static final String PLAYERDATALOCATION = "playerdata.json";
@@ -45,7 +52,25 @@ public class PlayerManager {
         return playerId > 0;
     }
 
+    private boolean isActivePlayer(long playerId) {
+        Player selectedPlayer = null;
+        for(Player player: players) {
+            if (player.getId() == playerId)
+                selectedPlayer = player;
+        }
 
+        if (selectedPlayer == null) {
+            throw new NonExistantPlayerException();
+        }
+
+        return !selectedPlayer.isDeleted();
+    }
+
+    /**
+     * Validate player id input
+     * Throws exceptions when invalid
+     * @param playerId
+     */
     private void validatePlayerIdInput(long playerId) {
         if (!isValidId(playerId)) {
             throw new InvalidPlayerIdException();
@@ -59,6 +84,7 @@ public class PlayerManager {
         getPlayer(playerId).editPlayer(name, shortName);
     }
 
+    @Nullable
     private Player getPlayer(long playerId) {
         for (Player player: players) {
             if (player.getId() == playerId) {
@@ -122,18 +148,55 @@ public class PlayerManager {
     }
 
     public void selectPlayer(long playerId) {
-        if (!isPlayerSelected(playerId)) {
+        validatePlayerIdInput(playerId);
+        if (!isActivePlayer(playerId)) {
+            throw new DeletedPlayerException();
+        } else if (isPlayerSelected(playerId)) {
+            throw new ReselectPlayerException();
+        } else {
             selectedPlayers.add(playerId);
         }
     }
 
     public void deselectPlayer(long playerId) {
+        validatePlayerIdInput(playerId);
+        if (!isActivePlayer(playerId)) {
+            throw new DeletedPlayerException();
+        }
         if (isPlayerSelected(playerId)) {
             selectedPlayers.remove(playerId);
+        } else {
+            throw new DeselectPlayerException();
+        }
+    }
+
+    /**
+     * Validate array of players parameter
+     * Throws exception when invalid
+     *
+     * @param selectedPlayers
+     */
+    private void validatePlayerIdArrayInput(long[] selectedPlayers) {
+        if (selectedPlayers == null) {
+            throw new IllegalArgumentException("Argument is null");
+        }
+
+        //check for duplicates
+        Set<Long> foundPlayers = new HashSet<>();
+        for(long player: selectedPlayers) {
+            validatePlayerIdInput(player);
+
+            if (foundPlayers.contains(player)) {
+                throw new IllegalArgumentException("Duplicate player");
+            }
+
+            foundPlayers.add(player);
         }
     }
 
     public void replaceSelectedPlayers(long[] selectedPlayers) {
+        validatePlayerIdArrayInput(selectedPlayers);
+
         this.selectedPlayers.clear();
         for(long playerId: selectedPlayers) {
             this.selectedPlayers.add(playerId);
@@ -150,6 +213,7 @@ public class PlayerManager {
     }
 
     public boolean isPlayerSelected(long playerId) {
+        validatePlayerIdInput(playerId);
         return selectedPlayers.contains(playerId);
     }
 
