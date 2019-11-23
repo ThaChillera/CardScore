@@ -1,16 +1,10 @@
 package io.github.thachillera.cardsscorekeeper.data.players;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -231,38 +225,24 @@ public class PlayerManager {
         return returnValues;
     }
 
-    public void loadPlayerData(Context context) {
-        try {
-            FileInputStream inputStream = context.openFileInput(PLAYERDATALOCATION);
-            players = new ArrayList<>(Arrays.asList(new Gson().fromJson(new InputStreamReader(inputStream), Player[].class)));
+    public byte[] getSaveData() {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        return gson.toJson(players.toArray()).getBytes();
+    }
 
-        } catch (IOException exception) {
-            Toast.makeText(context, "PlayerManager failed to load, some info could be lost", Toast.LENGTH_LONG).show();
-            players = new ArrayList<>();
-        }
+    public void loadPlayerData(byte[] data) {
+        players = new ArrayList<>(Arrays.asList(new Gson().fromJson(new String(data), Player[].class)));
 
         //Junk Players
         if (BuildConfig.DEBUG && players.isEmpty()) {
             try {
-                addPlayer("Test Player 1", "T1");
-                addPlayer("Test Player 2", "T2");
+                for (int i = 0; i < 5; i++) {
+                    addPlayer("Test Player " + i, "T" + i);
+                }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void savePlayerData(Context context) {
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-
-        try {
-            FileOutputStream outputStream =context.openFileOutput(PLAYERDATALOCATION, Context.MODE_PRIVATE);
-            outputStream.write(gson.toJson(players.toArray()).getBytes());
-            outputStream.close();
-
-        } catch (IOException exception) {
-            Toast.makeText(context, "PlayerManager failed to save, some info could be lost", Toast.LENGTH_LONG).show();
         }
     }
 }

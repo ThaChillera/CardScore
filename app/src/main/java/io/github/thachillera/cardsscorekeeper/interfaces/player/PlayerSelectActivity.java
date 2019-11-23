@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import io.github.thachillera.cardsscorekeeper.R;
+import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
 public class PlayerSelectActivity extends AppCompatActivity {
@@ -44,7 +45,7 @@ public class PlayerSelectActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        PlayerManager.getInstance().savePlayerData(this);
+        PersistenceManager.getInstance().savePlayerData();
     }
 
     public void onClickReturnClick(View v) {

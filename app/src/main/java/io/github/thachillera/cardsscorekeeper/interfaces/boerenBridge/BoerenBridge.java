@@ -6,15 +6,13 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Space;
 
 import io.github.thachillera.cardsscorekeeper.R;
+import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
@@ -46,9 +44,9 @@ public class BoerenBridge extends AppCompatActivity {
         //load save if relevant
         boolean loadSave = getIntent().getBooleanExtra(LOADSAVEGAMEEXTRA, false);
         if (loadSave) {
-            gameScoreManager = ReadOnlyGameScoreManager.loadGameData(getApplicationContext());
+            gameScoreManager = PersistenceManager.getInstance().loadGame();
         } else {
-            gameScoreManager = new GameScoreManager(getApplicationContext(), PlayerManager.getInstance().getSelectedPlayerCount());
+            gameScoreManager = new GameScoreManager(PlayerManager.getInstance().getSelectedPlayers());
         }
 
         setContentView(R.layout.activity_boeren_bridge);
@@ -198,8 +196,10 @@ public class BoerenBridge extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        gameScoreManager.saveGameData();
-        PlayerManager.getInstance().savePlayerData(this);
+
+        PersistenceManager persistenceManager = PersistenceManager.getInstance();
+        persistenceManager.saveGame(gameScoreManager);
+        persistenceManager.savePlayerData();
 
         //deselect deleted players that are selected (due to loading a savegame)
         PlayerManager.getInstance().deselectDeletedPlayers();
