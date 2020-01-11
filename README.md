@@ -2,6 +2,10 @@
 
 This app is used to track the score in the game 'Boerenbridge'.
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/io.github.thachillera.cardsscorekeeper/)
+
 ## Project management
 the 'master' branch is used as a stable candidate, the 'release' branch is used for releases.
 
