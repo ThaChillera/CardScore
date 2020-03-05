@@ -2,9 +2,15 @@ package io.github.thachillera.cardsscorekeeper.data.players;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import junitparams.converters.Nullable;
 
 import static org.junit.Assert.*;
 
+@RunWith(JUnitParamsRunner.class)
 public class PlayerTest {
 
     public static final int ID = 0;
@@ -61,52 +67,22 @@ public class PlayerTest {
     public static final String INVALIDSHORTNAME = "Four";
 
     @Test(expected = IllegalArgumentException.class)
-    public void createPlayerNoName() {
-        new Player(ID, null, SHORTNAME);
+    @Parameters({"null," + SHORTNAME,
+                "," + SHORTNAME,
+                NAME + ",null",
+                NAME + ",",
+                NAME + "," + INVALIDSHORTNAME})
+    public void createPlayerBadNames(@Nullable String name, @Nullable String shortName) {
+        new Player(ID, name, shortName);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createPlayerEmptyName() {
-        new Player(ID, "", SHORTNAME);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createPlayerNoShortName() {
-        new Player(ID, NAME, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createPlayerEmptyShortName() {
-        new Player(ID, NAME, "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void createPlayerLongShortName() {
-        new Player(ID, NAME, INVALIDSHORTNAME);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerNoName() {
-        player.editPlayer(null, EDITEDSHORTNAME);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerEmptyName() {
-        player.editPlayer("", EDITEDSHORTNAME);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerNoShortName() {
-        player.editPlayer(EDITEDNAME, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerEmptyShortName() {
-        player.editPlayer(EDITEDNAME, "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerLongShortName() {
-        player.editPlayer(EDITEDNAME, INVALIDSHORTNAME);
+    @Parameters({"null," + EDITEDSHORTNAME,
+            "," + EDITEDSHORTNAME,
+            EDITEDNAME + ",null",
+            EDITEDNAME + ",",
+            EDITEDNAME + "," + INVALIDSHORTNAME})
+    public void editPlayerBadNames(@Nullable String name, @Nullable String shortName) {
+        player.editPlayer(name, shortName);
     }
 }

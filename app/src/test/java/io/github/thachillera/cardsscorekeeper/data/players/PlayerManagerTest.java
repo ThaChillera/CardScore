@@ -3,6 +3,7 @@ package io.github.thachillera.cardsscorekeeper.data.players;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -12,6 +13,9 @@ import io.github.thachillera.cardsscorekeeper.data.players.exceptions.DeselectPl
 import io.github.thachillera.cardsscorekeeper.data.players.exceptions.InvalidPlayerIdException;
 import io.github.thachillera.cardsscorekeeper.data.players.exceptions.NonExistantPlayerException;
 import io.github.thachillera.cardsscorekeeper.data.players.exceptions.ReselectPlayerException;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import junitparams.converters.Nullable;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -19,6 +23,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(JUnitParamsRunner.class)
 public class PlayerManagerTest {
 
     PlayerManager playerManager;
@@ -194,28 +199,13 @@ public class PlayerManagerTest {
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void addPlayerNullName() {
-        playerManager.addPlayer(null, PlayerTest.SHORTNAME + PLAYERAMOUNT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addPlayerEmptyName() {
-        playerManager.addPlayer("", PlayerTest.SHORTNAME + PLAYERAMOUNT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addPlayerNullShortName() {
-        playerManager.addPlayer(PlayerTest.NAME + PLAYERAMOUNT, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addPlayerEmptyShortName() {
-        playerManager.addPlayer(PlayerTest.NAME + PLAYERAMOUNT, "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addPlayerLongShortName() {
-        playerManager.addPlayer(PlayerTest.NAME + PLAYERAMOUNT, PlayerTest.INVALIDSHORTNAME);
+    @Parameters({"null," + PlayerTest.SHORTNAME + PLAYERAMOUNT,
+            "," + PlayerTest.SHORTNAME + PLAYERAMOUNT,
+            PlayerTest.NAME + PLAYERAMOUNT + ",null",
+            PlayerTest.NAME + PLAYERAMOUNT + ",",
+            PlayerTest.NAME + PLAYERAMOUNT + "," + PlayerTest.INVALIDSHORTNAME})
+    public void addPlayerBadWeather(@Nullable String name, @Nullable String shortName) {
+        playerManager.addPlayer(name, shortName);
     }
 
     private static final long NONEXISTINGPLAYER = 1;
@@ -236,33 +226,14 @@ public class PlayerManagerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void editPlayerNullName() {
+    @Parameters({"null," + PlayerTest.SHORTNAME + PLAYERAMOUNT,
+            "," + PlayerTest.SHORTNAME + PLAYERAMOUNT,
+            PlayerTest.NAME + PLAYERAMOUNT + ",null",
+            PlayerTest.NAME + PLAYERAMOUNT + ",",
+            PlayerTest.NAME + PLAYERAMOUNT + "," + PlayerTest.INVALIDSHORTNAME})
+    public void editPlayerBadNames(@Nullable String name, @Nullable String shortName) {
         long playerId = playerManager.getActivePlayerIds()[0];
-        playerManager.editPlayer(playerId, null, PlayerTest.SHORTNAME + PLAYERAMOUNT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerEmptyName() {
-        long playerId = playerManager.getActivePlayerIds()[0];
-        playerManager.editPlayer(playerId, "", PlayerTest.SHORTNAME + PLAYERAMOUNT);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerNullShortName() {
-        long playerId = playerManager.getActivePlayerIds()[0];
-        playerManager.editPlayer(playerId, PlayerTest.NAME + PLAYERAMOUNT, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerEmptyShortName() {
-        long playerId = playerManager.getActivePlayerIds()[0];
-        playerManager.editPlayer(playerId, PlayerTest.NAME + PLAYERAMOUNT, "");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void editPlayerLongShortName() {
-        long playerId = playerManager.getActivePlayerIds()[0];
-        playerManager.editPlayer(playerId, PlayerTest.NAME + PLAYERAMOUNT, PlayerTest.INVALIDSHORTNAME);
+        playerManager.editPlayer(playerId, name, shortName);
     }
 
     @Test(expected = InvalidPlayerIdException.class)
@@ -316,7 +287,7 @@ public class PlayerManagerTest {
         playerManager.selectPlayer(playerId);
     }
 
-    @Test(expected = DeletedPlayerException.class) //figure out what exception to throw
+    @Test(expected = DeletedPlayerException.class)
     public void selectPlayerInactivePlayer() {
         long playerId = playerManager.getActivePlayerIds()[0];
         playerManager.deletePlayer(playerId);
