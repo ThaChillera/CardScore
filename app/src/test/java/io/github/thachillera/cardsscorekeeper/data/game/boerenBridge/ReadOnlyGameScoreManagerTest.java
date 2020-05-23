@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import io.github.thachillera.testutil.IntArrayConverter;
 import io.github.thachillera.testutil.LongArrayConverter;
 
 class ReadOnlyGameScoreManagerTest {
@@ -38,8 +39,20 @@ class ReadOnlyGameScoreManagerTest {
         Assert.assertEquals(expected, new GameScoreManager(fakePlayers).getAmountOfRounds());
     }
 
-    @org.junit.jupiter.api.Test
-    void getCardCount() {
+    @ParameterizedTest
+    @CsvSource({
+            FAKE_SELECTED_PLAYERS_THREE + ", '1,6,17,16,11,1', '0,5,16,17,22,32'",
+            FAKE_SELECTED_PLAYERS_FIVE + ", '1,6,10,9,8,1', '0,5,9,10,11,18'" ,
+            FAKE_SELECTED_PLAYERS_EIGHT + ", '1,4,6,5,3,1', '0,3,5,6,8,10'"
+    })
+    void getCardCount(@ConvertWith(LongArrayConverter.class) long[] fakePlayers,
+                      @ConvertWith(IntArrayConverter.class) int[] expectedCardCount,
+                      @ConvertWith(IntArrayConverter.class) int[] roundNumbers) {
+        GameScoreManager manager = new GameScoreManager(fakePlayers);
+
+        for (int i = 0; i < roundNumbers.length; i++) {
+            Assert.assertEquals(expectedCardCount[i], manager.getCardCount(roundNumbers[i]));
+        }
     }
 
     @org.junit.jupiter.api.Test
