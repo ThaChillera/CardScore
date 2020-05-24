@@ -172,6 +172,7 @@ public class BoerenBridge extends AppCompatActivity {
 
         //undo the data
         gameScoreManager.undo();
+        PersistenceManager.getInstance().saveGame(gameScoreManager);
 
         //undo the visuals
         headerManager.updateScores();

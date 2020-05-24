@@ -43,7 +43,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         }
 
         predictedRound = new PredictedRound(playerCount, getCardCount(round), predictions);
-        PersistenceManager.getInstance().saveGame(this);
     }
 
     /**
@@ -59,7 +58,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
         ++round;
         predictedRound = null;
-        PersistenceManager.getInstance().saveGame(this);
     }
 
     public void undo() {
@@ -75,8 +73,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
             //get old predicted round
             predictedRound = new PredictedRound(playerCount, getCardCount(round), lastRound.getPredictions());
         }
-
-        PersistenceManager.getInstance().saveGame(this);
     }
 
     public byte[] getSaveGameData() {
