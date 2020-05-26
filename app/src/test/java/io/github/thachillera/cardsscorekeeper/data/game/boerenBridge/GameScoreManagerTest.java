@@ -76,13 +76,65 @@ class GameScoreManagerTest {
     }
 
     @org.junit.jupiter.api.Test
+    void enterValues() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void enterPredictions() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void enterScores() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void undo() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void getSaveGameData() {
+    }
+
+    @org.junit.jupiter.api.Test
+    void loadGameData() {
+    }
+
+    @org.junit.jupiter.api.Test
     void getLastEntryType() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1l,2l,3l});
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.SCORE, gameScoreManager.getLastEntryType());
+
+        Map values = new HashMap<Long, Integer>();
+        values.put(1l, 0); values.put(2l, 0); values.put(3l, 1);
+        gameScoreManager.enterPredictions(values);
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.PREDICTION, gameScoreManager.getLastEntryType());
+
+        gameScoreManager.enterScores(values);
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.SCORE, gameScoreManager.getLastEntryType());
     }
 
     @org.junit.jupiter.api.Test
     void getNextEntryType() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.PREDICTION, gameScoreManager.getNextEntryType());
+
+        Map values = new HashMap<Long, Integer>();
+        values.put(1L, 0); values.put(2L, 0); values.put(3L, 1);
+        gameScoreManager.enterPredictions(values);
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.SCORE, gameScoreManager.getNextEntryType());
+
+        gameScoreManager.enterScores(values);
+        Assert.assertSame(ReadOnlyGameScoreManager.EntryType.PREDICTION, gameScoreManager.getNextEntryType());
     }
 
+    /**
+     * Play a full game with 3, 5 or 8 players.
+     *
+     * @param fakePlayers
+     * @param predictedRoundsWon
+     * @param actualRoundsWon
+     * @param resultingScore
+     */
     @ParameterizedTest
     @CsvSource({
             FAKE_SELECTED_PLAYERS_THREE +
