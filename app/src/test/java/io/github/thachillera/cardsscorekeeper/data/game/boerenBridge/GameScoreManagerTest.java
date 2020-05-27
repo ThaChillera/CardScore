@@ -93,6 +93,16 @@ class GameScoreManagerTest {
 
     @org.junit.jupiter.api.Test
     void getSaveGameData() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map values = new HashMap<Long, Integer>();
+        values.put(1l, 0); values.put(2l, 0); values.put(3l, 1);
+        gameScoreManager.enterPredictions(values);
+
+        String save = gameScoreManager.getSaveGameData();
+
+        Assert.assertNotNull(save);
+        Assert.assertFalse(save.isEmpty());
     }
 
     @org.junit.jupiter.api.Test
@@ -128,7 +138,7 @@ class GameScoreManagerTest {
     }
 
     /**
-     * Play a full game with 3, 5 or 8 players.
+     * Play a full game with 3, 5 and 8 players.
      *
      * @param fakePlayers
      * @param predictedRoundsWon

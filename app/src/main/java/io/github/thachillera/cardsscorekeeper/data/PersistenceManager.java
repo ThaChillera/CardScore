@@ -36,9 +36,9 @@ public class PersistenceManager {
      * @param location place to save data
      * @throws IOException
      */
-    private void save(byte[] data, String location) throws IOException {
+    private void save(String data, String location) throws IOException {
         FileOutputStream outputStream = context.openFileOutput(location, Context.MODE_PRIVATE);
-        outputStream.write(data);
+        outputStream.write(data.getBytes());
         outputStream.close();
     }
 
@@ -48,7 +48,7 @@ public class PersistenceManager {
      * @return loaded data
      * @throws IOException
      */
-    private byte[] load(String location) throws IOException {
+    private String load(String location) throws IOException {
         FileInputStream inputStream = context.openFileInput(location);
         byte[] buffer = new byte[(int)inputStream.getChannel().size()];
         inputStream.read(buffer);
@@ -57,7 +57,7 @@ public class PersistenceManager {
             throw new IOException("still more to read");
         }
 
-        return buffer;
+        return new String(buffer);
     }
 
     private final static String GAME_DATA_LOCATION = "gamedata.json";

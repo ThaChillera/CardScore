@@ -75,11 +75,11 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         }
     }
 
-    public byte[] getSaveGameData() {
+    public String getSaveGameData() {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
 
-        return gson.toJson(this).getBytes();
+        return gson.toJson(this);
     }
 
     /**
@@ -87,9 +87,9 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
      * @param gameData
      * @return restored savegame
      */
-    public static GameScoreManager loadGameData(byte[] gameData) {
+    public static GameScoreManager loadGameData(String gameData) {
         //set local data
-        GameScoreManager gameScoreManager = new Gson().fromJson(new String(gameData), GameScoreManager.class);
+        GameScoreManager gameScoreManager = new Gson().fromJson(gameData, GameScoreManager.class);
         //set selected players
         PlayerManager.getInstance().replaceSelectedPlayers(gameScoreManager.selectedPlayers);
         return gameScoreManager;

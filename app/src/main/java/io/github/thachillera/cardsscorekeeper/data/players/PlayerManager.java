@@ -225,14 +225,14 @@ public class PlayerManager {
         return returnValues;
     }
 
-    public byte[] getSaveData() {
+    public String getSaveData() {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        return gson.toJson(players.toArray()).getBytes();
+        return gson.toJson(players.toArray());
     }
 
-    public void loadPlayerData(byte[] data) {
-        players = new ArrayList<>(Arrays.asList(new Gson().fromJson(new String(data), Player[].class)));
+    public void loadPlayerData(String data) {
+        players = new ArrayList<>(Arrays.asList(new Gson().fromJson(data, Player[].class)));
 
         //Junk Players
         if (BuildConfig.DEBUG && players.isEmpty()) {
