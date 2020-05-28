@@ -27,8 +27,10 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         switch (getNextEntryType()) {
             case PREDICTION:
                 enterPredictions(values);
+                break;
             case SCORE:
                 enterScores(values);
+                break;
         }
     }
 

@@ -1,6 +1,8 @@
 package io.github.thachillera.cardsscorekeeper.data.game.boerenBridge;
 
 import org.junit.Assert;
+import org.junit.function.ThrowingRunnable;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -60,38 +62,78 @@ class GameScoreManagerTest {
     }
 
     @org.junit.jupiter.api.Test
-    void getPredictions() {
+    void setAndGetPredictions() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map values = new HashMap<Long, Integer>();
+        values.put(1L, 0); values.put(2L, 0); values.put(3L, 1);
+        gameScoreManager.enterPredictions(values);
+
+        final Map predictions = gameScoreManager.getPredictions(0);
+        Assert.assertEquals(predictions, values);
+
+        Assert.assertThrows(UnsupportedOperationException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                predictions.put(4L, 0);
+            }
+        });
     }
 
-    @org.junit.jupiter.api.Test
-    void getScores() {
+    @Test
+    void setAndGetScores() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map values = new HashMap<Long, Integer>();
+        values.put(1L, 0); values.put(2L, 0); values.put(3L, 1);
+        gameScoreManager.enterPredictions(values);
+
+        values = new HashMap<Long, Integer>();
+        values.put(1L, 1); values.put(2L, 0); values.put(3L, 0);
+        gameScoreManager.enterScores(values);
+
+        final Map scores = gameScoreManager.getScores(0);
+        Assert.assertEquals(scores, values);
+
+        Assert.assertThrows(UnsupportedOperationException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                scores.put(4L, 0);
+            }
+        });
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
+    void enterValues() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map predictions = new HashMap<Long, Integer>();
+        predictions.put(1L, 0); predictions.put(2L, 0); predictions.put(3L, 1);
+        gameScoreManager.enterValues(predictions);
+
+        Map scores = new HashMap<Long, Integer>();
+        scores.put(1L, 1); scores.put(2L, 0); scores.put(3L, 0);
+        gameScoreManager.enterValues(scores);
+
+        final Map gotPredictions = gameScoreManager.getPredictions(0);
+        final Map gotScores = gameScoreManager.getScores(0);
+        Assert.assertEquals(predictions, gotPredictions);
+        Assert.assertEquals(scores, gotScores);
+    }
+
+    @Test
     void getResults() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getResult() {
     }
 
-    @org.junit.jupiter.api.Test
-    void enterValues() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void enterPredictions() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void enterScores() {
-    }
-
-    @org.junit.jupiter.api.Test
+    @Test
     void undo() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getSaveGameData() {
         GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
 
@@ -105,11 +147,11 @@ class GameScoreManagerTest {
         Assert.assertFalse(save.isEmpty());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void loadGameData() {
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getLastEntryType() {
         GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1l,2l,3l});
         Assert.assertSame(ReadOnlyGameScoreManager.EntryType.SCORE, gameScoreManager.getLastEntryType());
@@ -123,7 +165,7 @@ class GameScoreManagerTest {
         Assert.assertSame(ReadOnlyGameScoreManager.EntryType.SCORE, gameScoreManager.getLastEntryType());
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void getNextEntryType() {
         GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
         Assert.assertSame(ReadOnlyGameScoreManager.EntryType.PREDICTION, gameScoreManager.getNextEntryType());
