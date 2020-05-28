@@ -92,9 +92,11 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
     public static GameScoreManager loadGameData(String gameData) {
         //set local data
         GameScoreManager gameScoreManager = new Gson().fromJson(gameData, GameScoreManager.class);
-        //set selected players
-        PlayerManager.getInstance().replaceSelectedPlayers(gameScoreManager.selectedPlayers);
+
         return gameScoreManager;
     }
 
+    public long[] getSelectedPlayers() {
+        return selectedPlayers.clone();
+    }
 }

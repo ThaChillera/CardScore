@@ -10,9 +10,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.thachillera.testutil.IntMatrixConverter;
-import io.github.thachillera.testutil.IntArrayConverter;
-import io.github.thachillera.testutil.LongArrayConverter;
+import io.github.thachillera.testutil.GameScoreManagerUtil;
+import io.github.thachillera.testutil.converters.IntMatrixConverter;
+import io.github.thachillera.testutil.converters.IntArrayConverter;
+import io.github.thachillera.testutil.converters.LongArrayConverter;
 
 class GameScoreManagerTest {
     private static final String FAKE_SELECTED_PLAYERS_THREE = "'1,2,3'", FAKE_SELECTED_PLAYERS_FIVE = "'1,2,3,4,5'", FAKE_SELECTED_PLAYERS_EIGHT = "'1,2,3,4,5,6,7,8'";
@@ -123,10 +124,45 @@ class GameScoreManagerTest {
 
     @Test
     void getResults() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map predictions = new HashMap<Long, Integer>();
+        predictions.put(1L, 0); predictions.put(2L, 0); predictions.put(3L, 1);
+        gameScoreManager.enterValues(predictions);
+
+        Map scores = new HashMap<Long, Integer>();
+        scores.put(1L, 1); scores.put(2L, 0); scores.put(3L, 0);
+        gameScoreManager.enterValues(scores);
+
+        Map expectedResults = new HashMap<Long, Integer>();
+        expectedResults.put(1L, -2); expectedResults.put(2L, 10); expectedResults.put(3L, -2);
+
+        final Map results = gameScoreManager.getResults();
+        Assert.assertEquals(expectedResults, results);
+
+        Assert.assertThrows(UnsupportedOperationException.class, new ThrowingRunnable() {
+            @Override
+            public void run() throws Throwable {
+                results.put(4L, 0);
+            }
+        });
     }
 
     @Test
     void getResult() {
+        GameScoreManager gameScoreManager = new GameScoreManager(new long[]{1L, 2L, 3L});
+
+        Map predictions = new HashMap<Long, Integer>();
+        predictions.put(1L, 0); predictions.put(2L, 0); predictions.put(3L, 1);
+        gameScoreManager.enterValues(predictions);
+
+        Map scores = new HashMap<Long, Integer>();
+        scores.put(1L, 1); scores.put(2L, 0); scores.put(3L, 0);
+        gameScoreManager.enterValues(scores);
+
+        Assert.assertEquals(-2, gameScoreManager.getResult(1));
+        Assert.assertEquals(10, gameScoreManager.getResult(2));
+        Assert.assertEquals(-2, gameScoreManager.getResult(3));
     }
 
     @Test
@@ -149,6 +185,21 @@ class GameScoreManagerTest {
 
     @Test
     void loadGameData() {
+        GameScoreManager saveGame = GameScoreManagerUtil.getGame(3, 11);
+
+        GameScoreManager loadedGame = GameScoreManager.loadGameData(saveGame.getSaveGameData());
+
+        Assert.assertEquals(saveGame.getAmountOfRounds(), loadedGame.getAmountOfRounds());
+        Assert.assertEquals(saveGame.getMaxCards(), loadedGame.getMaxCards());
+        Assert.assertEquals(saveGame.getLastEntryType(), loadedGame.getLastEntryType());
+        Assert.assertEquals(saveGame.getNextEntryType(), loadedGame.getNextEntryType());
+        Assert.assertEquals(saveGame.getRound(), loadedGame.getRound());
+
+        for (int i = 0; i < 11; i++) {
+            Assert.assertEquals(saveGame.getPredictions(i), loadedGame.getPredictions(i));
+            Assert.assertEquals(saveGame.getScores(i), loadedGame.getScores(i));
+            Assert.assertEquals(saveGame.getResults(), loadedGame.getResults());
+        }
     }
 
     @Test
@@ -177,6 +228,19 @@ class GameScoreManagerTest {
 
         gameScoreManager.enterScores(values);
         Assert.assertSame(ReadOnlyGameScoreManager.EntryType.PREDICTION, gameScoreManager.getNextEntryType());
+    }
+
+    @Test
+    void getSelectedPlayers() {
+        long[] sourcePlayers = new long[] {1L, 2L, 3L};
+
+        GameScoreManager gameScoreManager = new GameScoreManager(sourcePlayers);
+
+        long[] copyOfPlayers = gameScoreManager.getSelectedPlayers();
+        Assert.assertArrayEquals(sourcePlayers, copyOfPlayers);
+
+        copyOfPlayers[0] = 100L;
+        Assert.assertArrayEquals(sourcePlayers, gameScoreManager.getSelectedPlayers());
     }
 
     /**

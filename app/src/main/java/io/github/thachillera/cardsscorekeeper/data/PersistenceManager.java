@@ -88,7 +88,12 @@ public class PersistenceManager {
         }
 
         try {
-            return GameScoreManager.loadGameData(load(GAME_DATA_LOCATION));
+            //load game data
+            GameScoreManager manager = GameScoreManager.loadGameData(load(GAME_DATA_LOCATION));
+            //set selected players
+            PlayerManager.getInstance().replaceSelectedPlayers(manager.getSelectedPlayers());
+
+            return manager;
         } catch (IOException exception) {
             Toast.makeText(context, "GameManager failed to load, some info could be lost", Toast.LENGTH_LONG).show();
             return new GameScoreManager(PlayerManager.getInstance().getSelectedPlayers());
