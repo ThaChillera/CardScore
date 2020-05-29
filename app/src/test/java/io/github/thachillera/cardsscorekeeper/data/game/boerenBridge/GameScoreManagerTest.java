@@ -18,12 +18,11 @@ import io.github.thachillera.testutil.converters.LongArrayConverter;
 class GameScoreManagerTest {
     private static final String FAKE_SELECTED_PLAYERS_THREE = "'1,2,3'", FAKE_SELECTED_PLAYERS_FIVE = "'1,2,3,4,5'", FAKE_SELECTED_PLAYERS_EIGHT = "'1,2,3,4,5,6,7,8'";
 
-    @org.junit.jupiter.api.BeforeEach
-    void setUp() {
-    }
-
-    @org.junit.jupiter.api.Test
+    @Test
     void getRound() {
+        GameScoreManager gameScoreManager = GameScoreManagerUtil.getPseudoRandomGame(3,11);
+
+        Assert.assertEquals(12, gameScoreManager.getRound());
     }
 
     @ParameterizedTest
@@ -70,6 +69,8 @@ class GameScoreManagerTest {
         values.put(1L, 0); values.put(2L, 0); values.put(3L, 1);
         gameScoreManager.enterPredictions(values);
 
+        Assert.assertNull(gameScoreManager.getPredictions(3));
+
         final Map predictions = gameScoreManager.getPredictions(0);
         Assert.assertEquals(predictions, values);
 
@@ -92,6 +93,8 @@ class GameScoreManagerTest {
         values = new HashMap<Long, Integer>();
         values.put(1L, 1); values.put(2L, 0); values.put(3L, 0);
         gameScoreManager.enterScores(values);
+
+        Assert.assertNull(gameScoreManager.getScores(3));
 
         final Map scores = gameScoreManager.getScores(0);
         Assert.assertEquals(scores, values);
@@ -167,6 +170,23 @@ class GameScoreManagerTest {
 
     @Test
     void undo() {
+        GameScoreManager gameScoreManager = GameScoreManagerUtil.getSimpleGame(11);
+
+        for (int i = 11; i >= 0; i--) {
+            //undo enter score
+            gameScoreManager.undo();
+
+            Assert.assertNull(gameScoreManager.getScores(i));
+
+            //undo enter prediction
+            gameScoreManager.undo();
+            Assert.assertNull(gameScoreManager.getPredictions(i));
+
+            int[] expectedResults = GameScoreManagerUtil.getSimpleGameExpectedScores(i-1);
+            Map results = gameScoreManager.getResults();
+            Assert.assertEquals(expectedResults[0], results.get(1L));
+            Assert.assertEquals(expectedResults[1], results.get(2L));
+        }
     }
 
     @Test
@@ -185,7 +205,7 @@ class GameScoreManagerTest {
 
     @Test
     void loadGameData() {
-        GameScoreManager saveGame = GameScoreManagerUtil.getGame(3, 11);
+        GameScoreManager saveGame = GameScoreManagerUtil.getPseudoRandomGame(3, 11);
 
         GameScoreManager loadedGame = GameScoreManager.loadGameData(saveGame.getSaveGameData());
 
