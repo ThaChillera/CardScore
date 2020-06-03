@@ -140,7 +140,6 @@ public class RoundCount extends RelativeLayout {
             //for each player, add input to layout
             //order is based on who starts this round, player who starts is at the top
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3);
-            LinearLayout.LayoutParams spaceParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
 
             for (int i = STARTINGPLAYER; i < playerManager.getSelectedPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
@@ -148,9 +147,6 @@ public class RoundCount extends RelativeLayout {
 
                 LinearLayout innerLayout = new LinearLayout(CONTEXT);
                 innerLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                Space space = new Space(CONTEXT);
-                space.setLayoutParams(spaceParams);
 
                 innerLayout.addView(getSpace());
 

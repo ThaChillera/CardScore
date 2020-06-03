@@ -182,7 +182,7 @@ class GameScoreManagerTest {
             gameScoreManager.undo();
             Assert.assertNull(gameScoreManager.getPredictions(i));
 
-            int[] expectedResults = GameScoreManagerUtil.getSimpleGameExpectedScores(i-1);
+            int[] expectedResults = GameScoreManagerUtil.getSimpleGameExpectedScores(2, i-1);
             Map results = gameScoreManager.getResults();
             Assert.assertEquals(expectedResults[0], results.get(1L));
             Assert.assertEquals(expectedResults[1], results.get(2L));
