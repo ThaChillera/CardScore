@@ -15,6 +15,7 @@ import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 import io.github.thachillera.androidtestutil.IsPlayerScore;
+import io.github.thachillera.testutil.GameScoreManagerUtil;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -68,8 +69,8 @@ public class BoerenBridgeTest {
                 onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
 
                 //validate score
-                int[] expectedScores = io.github.thachillera.testutil.GameScoreManagerUtil(3, i);
-                onView(IsPlayerScore.playerScore(playerNames[0])).check(Integer.toString(expectedScores[0]));
+                int[] expectedScores = GameScoreManagerUtil.getSimpleGameExpectedScores(3, i);
+                onView(IsPlayerScore.playerScore(playerNames[0])).(Integer.toString(expectedScores[0]));
             }
 
             for (int i = roundsPlayed / 2 + 1; i > 0; i--) {
