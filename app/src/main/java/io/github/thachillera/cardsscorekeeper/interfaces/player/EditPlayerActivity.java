@@ -55,15 +55,21 @@ public class EditPlayerActivity extends AppCompatActivity {
             Toast.makeText(this, getResources().getString(R.string.editPlayer_missing_shortname), Toast.LENGTH_SHORT).show();
         } else if (shortName.getText().length() > 3) {
             //shortname too long
-            Toast.makeText(this, "Shortname may only be maximum 3 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.editPlayer_too_long_shortname, Toast.LENGTH_SHORT).show();
         } else {
-            if (playerId == -1) {
-                //save & finish
-                playerManager.addPlayer(name.getText().toString(), shortName.getText().toString());
-            } else {
-                playerManager.editPlayer(playerId, name.getText().toString(), shortName.getText().toString());
+            try {
+                if (playerId == -1) {
+                    //save & finish
+                    playerManager.addPlayer(name.getText().toString(), shortName.getText().toString());
+                } else {
+                    playerManager.editPlayer(playerId, name.getText().toString(), shortName.getText().toString());
+                }
+                finish();
+            } catch (IllegalArgumentException e) {
+                //Illegal argument, fail
+                Toast.makeText(this, R.string.editPlayer_input_error, Toast.LENGTH_SHORT).show();
+                return;
             }
-            finish();
         }
     }
 }

@@ -1,44 +1,29 @@
 package io.github.thachillera.cardsscorekeeper.data.game.boerenBridge;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
-import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
-import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReadOnlyGameScoreManager {
+import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
+import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
 
-    private transient final static String GAMEDATAPREFIX = "gamedata_", GAMESCOREMANAGERLOCATION = GAMEDATAPREFIX + "manager.json", SELECTEDPLAYERSLOCATION = GAMEDATAPREFIX + "selectedplayers.json";
+public abstract class ReadOnlyGameScoreManager {
 
-    transient PlayerManager playerManager = PlayerManager.getInstance();
-    transient Context context;
+    final int playerCount;
+    final long[] selectedPlayers;
+    private final int maxCards, amountOfRounds;
 
     //current round
     int round = 0;
-    final int playerCount;
-
-    private final int maxCards, amountOfRounds;
-
     PredictedRound predictedRound = null;
     ArrayList<FinishedRound> finishedRounds = new ArrayList<>();
 
-    ReadOnlyGameScoreManager(final Context context, int playerCount) {
-        this.context = context;
-        this.playerCount = playerCount;
+    ReadOnlyGameScoreManager(long[] selectedPlayers) {
+        this.playerCount = selectedPlayers.length;
+        this.selectedPlayers = selectedPlayers;
 
         maxCards = 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
         amountOfRounds = ((maxCards * 2)) - 1;
@@ -93,7 +78,7 @@ public class ReadOnlyGameScoreManager {
     public Map<Long, Integer> getResults() {
         Map<Long, Integer> results = new HashMap<>();
 
-        for (long playerID: playerManager.getSelectedPlayers()) {
+        for (long playerID: selectedPlayers) {
             results.put(playerID, getResult(playerID));
         }
 
@@ -124,47 +109,5 @@ public class ReadOnlyGameScoreManager {
 
     public GameScoreManager.EntryType getNextEntryType() {
         return predictedRound == null ? GameScoreManager.EntryType.PREDICTION : GameScoreManager.EntryType.SCORE;
-    }
-
-    public static boolean hasExistingSave(Context context) {
-        return new File(context.getFilesDir(),GAMESCOREMANAGERLOCATION).exists() && new File(context.getFilesDir(),SELECTEDPLAYERSLOCATION).exists();
-    }
-
-    public static GameScoreManager loadGameData(Context context) {
-        PlayerManager playerManager = PlayerManager.getInstance();
-        long[] selectedPlayersBackup = playerManager.getSelectedPlayers();
-        try {
-            FileInputStream inputStream = context.openFileInput(SELECTEDPLAYERSLOCATION);
-            playerManager.replaceSelectedPlayers(new Gson().fromJson(new InputStreamReader(inputStream), long[].class));
-
-            inputStream = context.openFileInput(GAMESCOREMANAGERLOCATION);
-            GameScoreManager gameScoreManager = new Gson().fromJson(new InputStreamReader(inputStream), GameScoreManager.class);
-            gameScoreManager.playerManager = PlayerManager.getInstance();
-            gameScoreManager.context = context;
-            return gameScoreManager;
-
-        } catch (IOException exception) {
-            Toast.makeText(context, "GameManager failed to load, some info could be lost", Toast.LENGTH_LONG).show();
-            playerManager.replaceSelectedPlayers(selectedPlayersBackup);
-            return new GameScoreManager(context, PlayerManager.getInstance().getSelectedPlayerCount());
-        }
-    }
-
-    public void saveGameData() {
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-
-        try {
-            FileOutputStream outputStream = context.openFileOutput(GAMESCOREMANAGERLOCATION, Context.MODE_PRIVATE);
-            outputStream.write(gson.toJson(this).getBytes());
-            outputStream.close();
-
-            outputStream = context.openFileOutput(SELECTEDPLAYERSLOCATION, Context.MODE_PRIVATE);
-            outputStream.write(gson.toJson(playerManager.getSelectedPlayers()).getBytes());
-            outputStream.close();
-
-        } catch (IOException exception) {
-            Toast.makeText(context, "GameManager failed to save, some info could be lost", Toast.LENGTH_LONG).show();
-        }
     }
 }

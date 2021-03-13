@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.thachillera.cardsscorekeeper.R;
+import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
@@ -241,6 +242,7 @@ public class RoundCount extends RelativeLayout {
             //if this entry is score, update views && activate next round
             if (gameScoreManager.getNextEntryType() == GameScoreManager.EntryType.SCORE) {
                 gameScoreManager.enterScores(inputMap);
+                PersistenceManager.getInstance().saveGame(gameScoreManager);
 
                 headerManager.updateScores();
                 rowManager.updateScores();
@@ -248,6 +250,8 @@ public class RoundCount extends RelativeLayout {
                 nextRound.changeButtonVisibility(ButtonVisible.PREDICT);
             } else {
                 gameScoreManager.enterPredictions(inputMap);
+                PersistenceManager.getInstance().saveGame(gameScoreManager);
+
                 rowManager.updatePredictions();
                 changeButtonVisibility(ButtonVisible.SCORE);
             }

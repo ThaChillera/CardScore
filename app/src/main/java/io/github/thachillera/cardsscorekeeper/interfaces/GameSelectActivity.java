@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import io.github.thachillera.cardsscorekeeper.R;
-import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
+import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 import io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity;
@@ -26,11 +26,13 @@ public class GameSelectActivity extends AppCompatActivity {
         toolbar.setTitle(R.string.title_activity_game_select);
         setSupportActionBar(toolbar);
 
-        playerManager.loadPlayerData(this);
+        PersistenceManager persistenceManager = PersistenceManager.getInstance();
+        persistenceManager.setContext(getBaseContext());
+        persistenceManager.loadPlayerData();
     }
 
     public void onGameSelect(View v) {
-        if (ReadOnlyGameScoreManager.hasExistingSave(getApplicationContext())) {
+        if (PersistenceManager.getInstance().hasExistingSavedGame()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setMessage(R.string.savegame_load_request_body)

@@ -1,4 +1,4 @@
-package com.github.cardsscorekeeper;
+package io.github.thachillera;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

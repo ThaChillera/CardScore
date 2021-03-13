@@ -11,8 +11,6 @@ class RoundData {
     final private Map<Long, Integer> predictions, scores, results;
     final private int playerCount, cardCount;
 
-    final private PlayerManager playerManager = PlayerManager.getInstance();
-
     RoundData(int playerCount, int cardCount, Map<Long, Integer> predictions) {
         this.playerCount = playerCount;
         this.cardCount = cardCount;
@@ -49,14 +47,13 @@ class RoundData {
             this.scores.put(playerID, scores.get(playerID));
         }
 
-        calculateScores();
+        calculateScores(scores.keySet().toArray(new Long[scores.size()]));
         return new FinishedRound(this);
     }
 
-    private void calculateScores() {
+    private void calculateScores(Long[] players) {
         //calculate results
-        for (int i = 0; i < playerCount; i++) {
-            long playerID = playerManager.getSelectedPlayers()[i];
+        for (long playerID: players) {
             results.put(playerID,
                     predictions.get(playerID).equals(scores.get(playerID))
                         ? 10 + (2* scores.get(playerID))

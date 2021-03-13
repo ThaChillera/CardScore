@@ -1,17 +1,21 @@
 package io.github.thachillera.cardsscorekeeper.data.game.boerenBridge;
 
 
-import android.content.Context;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
+import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class GameScoreManager extends ReadOnlyGameScoreManager {
 
-    public GameScoreManager(final Context context, int playerCount) {
-        super(context, playerCount);
+    public GameScoreManager(long[] selectedPlayers) {
+        super(selectedPlayers);
     }
 
     /**
@@ -23,8 +27,10 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         switch (getNextEntryType()) {
             case PREDICTION:
                 enterPredictions(values);
+                break;
             case SCORE:
                 enterScores(values);
+                break;
         }
     }
 
@@ -39,7 +45,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         }
 
         predictedRound = new PredictedRound(playerCount, getCardCount(round), predictions);
-        saveGameData();
     }
 
     /**
@@ -55,7 +60,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
         ++round;
         predictedRound = null;
-        saveGameData();
     }
 
     public void undo() {
@@ -71,7 +75,28 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
             //get old predicted round
             predictedRound = new PredictedRound(playerCount, getCardCount(round), lastRound.getPredictions());
         }
+    }
 
-        saveGameData();
+    public String getSaveGameData() {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        return gson.toJson(this);
+    }
+
+    /**
+     * Loads game data and sets selected players in PlayerManager
+     * @param gameData
+     * @return restored savegame
+     */
+    public static GameScoreManager loadGameData(String gameData) {
+        //set local data
+        GameScoreManager gameScoreManager = new Gson().fromJson(gameData, GameScoreManager.class);
+
+        return gameScoreManager;
+    }
+
+    public long[] getSelectedPlayers() {
+        return selectedPlayers.clone();
     }
 }
