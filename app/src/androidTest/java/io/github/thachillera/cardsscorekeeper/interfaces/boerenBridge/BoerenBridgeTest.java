@@ -18,6 +18,7 @@ import io.github.thachillera.androidtestutil.IsPlayerScore;
 import io.github.thachillera.testutil.GameScoreManagerUtil;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -50,7 +51,7 @@ public class BoerenBridgeTest {
     }
 
     @Test
-    public void FullPlaythrough() {
+    public void FullPlaythrough() throws InterruptedException {
         try {
             //play round
             for (int i = 1; i < roundsPlayed / 2 + 1; i++) {
@@ -67,10 +68,6 @@ public class BoerenBridgeTest {
                 onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
                 onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
                 onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
-
-                //validate score
-                int[] expectedScores = GameScoreManagerUtil.getSimpleGameExpectedScores(3, i);
-                onView(IsPlayerScore.playerScore(playerNames[0])).(Integer.toString(expectedScores[0]));
             }
 
             for (int i = roundsPlayed / 2 + 1; i > 0; i--) {
@@ -88,8 +85,15 @@ public class BoerenBridgeTest {
                 onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
                 onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
             }
+
+            pressBack();
+            onView(withText(R.string.boeren_bridge_title)).perform(click());
+            onView(withText(R.string.ok)).perform(click());
+
+            Thread.sleep(500);
         } catch (Exception e) {
             Log.e("TAG", "FullPlaythrough: ", e);
+            throw e;
         }
     }
 
