@@ -19,6 +19,9 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.GameScoreManager;
@@ -27,14 +30,12 @@ import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.headers.HeaderManager;
 import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.rows.RowManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Square on the left of the score sheet.
  * Keeps track of rounds & contains predict & enter score buttons.
  */
 public class RoundCount extends RelativeLayout {
+    final int STARTINGPLAYER;
     final private String TAG = "RoundCount";
     final private Context CONTEXT;
     final private PlayerManager playerManager = PlayerManager.getInstance();
@@ -43,12 +44,10 @@ public class RoundCount extends RelativeLayout {
     final private RowManager rowManager;
     private RoundCount nextRound;
 
-    final int STARTINGPLAYER;
-
     public RoundCount(Context CONTEXT, GameScoreManager gameScoreManager, HeaderManager headerManager, RowManager rowManager, int roundNumber, int cardCount) {
         super(CONTEXT);
         this.CONTEXT = CONTEXT;
-        this.STARTINGPLAYER = (roundNumber -1) % playerManager.getSelectedPlayerCount();
+        this.STARTINGPLAYER = (roundNumber - 1) % playerManager.getSelectedPlayerCount();
         this.gameScoreManager = gameScoreManager;
         this.headerManager = headerManager;
         this.rowManager = rowManager;
@@ -71,10 +70,6 @@ public class RoundCount extends RelativeLayout {
 
     public void setNextRound(RoundCount nextRound) {
         this.nextRound = nextRound;
-    }
-
-    enum ButtonVisible {
-        PREDICT, SCORE, NONE
     }
 
     /**
@@ -113,6 +108,10 @@ public class RoundCount extends RelativeLayout {
         }
     }
 
+    enum ButtonVisible {
+        PREDICT, SCORE, NONE
+    }
+
     private class ButtonOnClickListener implements OnClickListener {
 
         @Override
@@ -135,7 +134,7 @@ public class RoundCount extends RelativeLayout {
 
             final AlertDialog dialog = builder.show();
             //Fix for edittext not being selectable
-            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
             //for each player, add input to layout
             //order is based on who starts this round, player who starts is at the top
@@ -197,7 +196,7 @@ public class RoundCount extends RelativeLayout {
             for (int i = STARTINGPLAYER; i < playerManager.getSelectedPlayerCount() + STARTINGPLAYER; i++) {
                 int index = getPlayerIndex(i);
 
-                EditText editText = (EditText)((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3);
+                EditText editText = (EditText) ((LinearLayout) linearLayout.getChildAt(i - STARTINGPLAYER)).getChildAt(3);
 
                 //verify input
                 int input;
@@ -214,7 +213,7 @@ public class RoundCount extends RelativeLayout {
 
             //validate results
             int totalValue = 0;
-            for (int value: inputs) {
+            for (int value : inputs) {
                 if (value < 0) {
                     Toast toast = Toast.makeText(CONTEXT, CONTEXT.getResources().getString(R.string.invalid_number), Toast.LENGTH_SHORT);
                     toast.show();
@@ -243,7 +242,9 @@ public class RoundCount extends RelativeLayout {
                 headerManager.updateScores();
                 rowManager.updateScores();
                 changeButtonVisibility(ButtonVisible.NONE);
-                nextRound.changeButtonVisibility(ButtonVisible.PREDICT);
+                if (gameScoreManager.getRound() != gameScoreManager.getAmountOfRounds()) {
+                    nextRound.changeButtonVisibility(ButtonVisible.PREDICT);
+                }
             } else {
                 gameScoreManager.enterPredictions(inputMap);
                 PersistenceManager.getInstance().saveGame(gameScoreManager);

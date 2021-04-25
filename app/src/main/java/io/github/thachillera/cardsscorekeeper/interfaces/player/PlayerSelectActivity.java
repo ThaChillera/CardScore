@@ -10,7 +10,6 @@ import android.view.View;
 
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
-import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
 public class PlayerSelectActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;

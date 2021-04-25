@@ -1,6 +1,5 @@
 package io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge;
 
-import android.util.Log;
 import android.widget.Button;
 
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -14,17 +13,13 @@ import org.junit.Test;
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
-import io.github.thachillera.androidtestutil.IsPlayerScore;
-import io.github.thachillera.testutil.GameScoreManagerUtil;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static io.github.thachillera.androidtestutil.IsEnterPredictionOrScoreDialog.enterPredictionOrScoreDialog;
 import static org.hamcrest.Matchers.allOf;
@@ -51,50 +46,29 @@ public class BoerenBridgeTest {
     }
 
     @Test
-    public void FullPlaythrough() throws InterruptedException {
-        try {
-            //play round
-            for (int i = 1; i < roundsPlayed / 2 + 1; i++) {
-                //enter prediction
-                onView(allOf(withText(R.string.predict_score), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(scrollTo()).perform(click());
-                onView(enterPredictionOrScoreDialog(playerNames[0])).perform(typeText(Integer.toString(i)));
-                onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
-                onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
-                onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
-
-                //enter score
-                onView(allOf(withText(R.string.enter_score), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(click());
-                onView(enterPredictionOrScoreDialog(playerNames[0])).perform(typeText(Integer.toString(i)));
-                onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
-                onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
-                onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
-            }
-
-            for (int i = roundsPlayed / 2 + 1; i > 0; i--) {
-                //enter prediction
-                onView(allOf(withText(R.string.predict_score), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(scrollTo()).perform(click());
-                onView(enterPredictionOrScoreDialog(playerNames[0])).perform(typeText(Integer.toString(i)));
-                onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
-                onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
-                onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
-
-                //enter score
-                onView(allOf(withText(R.string.enter_score), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(click());
-                onView(enterPredictionOrScoreDialog(playerNames[0])).perform(typeText(Integer.toString(i)));
-                onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
-                onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
-                onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
-            }
-
-            pressBack();
-            onView(withText(R.string.boeren_bridge_title)).perform(click());
-            onView(withText(R.string.ok)).perform(click());
-
-            Thread.sleep(500);
-        } catch (Exception e) {
-            Log.e("TAG", "FullPlaythrough: ", e);
-            throw e;
+    public void FullPlaythrough() {
+        //first half
+        for (int i = 1; i < roundsPlayed / 2 + 1; i++) {
+            playRound(i);
         }
+
+        //second half
+        for (int i = roundsPlayed / 2 + 1; i > 0; i--) {
+            playRound(i);
+        }
+    }
+
+    private void playRound(int roundNr) {
+        playHalfRound(R.string.predict_score, roundNr);
+        playHalfRound(R.string.enter_score, roundNr);
+    }
+
+    private void playHalfRound(int buttonTextResourceId, int roundNr) {
+        onView(allOf(withText(buttonTextResourceId), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(scrollTo()).perform(click());
+        onView(enterPredictionOrScoreDialog(playerNames[0])).perform(typeText(Integer.toString(roundNr)));
+        onView(enterPredictionOrScoreDialog(playerNames[1])).perform(typeText("0"));
+        onView(enterPredictionOrScoreDialog(playerNames[2])).perform(typeText("0"));
+        onView(allOf(isAssignableFrom(Button.class), withText(R.string.ok))).perform(click());
     }
 
 }

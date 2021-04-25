@@ -23,14 +23,14 @@ public class PlayerManager {
     private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<Long> selectedPlayers = new ArrayList<>();
 
+    private PlayerManager() {
+    }
+
     public static PlayerManager getInstance() {
         if (ourInstance == null) {
             ourInstance = new PlayerManager();
         }
         return ourInstance;
-    }
-
-    private PlayerManager() {
     }
 
     public void addPlayer(String name, String shortName) throws IllegalArgumentException {
@@ -48,7 +48,7 @@ public class PlayerManager {
 
     private boolean isActivePlayer(long playerId) {
         Player selectedPlayer = null;
-        for(Player player: players) {
+        for (Player player : players) {
             if (player.getId() == playerId)
                 selectedPlayer = player;
         }
@@ -63,6 +63,7 @@ public class PlayerManager {
     /**
      * Validate player id input
      * Throws exceptions when invalid
+     *
      * @param playerId
      */
     private void validatePlayerIdInput(long playerId) {
@@ -80,7 +81,7 @@ public class PlayerManager {
 
     @Nullable
     private Player getPlayer(long playerId) {
-        for (Player player: players) {
+        for (Player player : players) {
             if (player.getId() == playerId) {
                 return player;
             }
@@ -102,7 +103,7 @@ public class PlayerManager {
 
     public int getActivePlayersCount() {
         int playercount = 0;
-        for (Player player: players) {
+        for (Player player : players) {
             if (!player.isDeleted()) {
                 ++playercount;
             }
@@ -113,7 +114,7 @@ public class PlayerManager {
     public long[] getActivePlayerIds() {
         long[] ids = new long[getActivePlayersCount()];
         int i = 0;
-        for (Player player: players) {
+        for (Player player : players) {
             if (!player.isDeleted()) {
                 ids[i] = player.getId();
                 ++i;
@@ -177,7 +178,7 @@ public class PlayerManager {
 
         //check for duplicates
         Set<Long> foundPlayers = new HashSet<>();
-        for(long player: selectedPlayers) {
+        for (long player : selectedPlayers) {
             validatePlayerIdInput(player);
 
             if (foundPlayers.contains(player)) {
@@ -192,14 +193,14 @@ public class PlayerManager {
         validatePlayerIdArrayInput(selectedPlayers);
 
         this.selectedPlayers.clear();
-        for(long playerId: selectedPlayers) {
+        for (long playerId : selectedPlayers) {
             this.selectedPlayers.add(playerId);
         }
     }
 
     public void deselectDeletedPlayers() {
         ArrayList<Long> selectedPlayersCopy = (ArrayList<Long>) selectedPlayers.clone();
-        for(long playerId: selectedPlayersCopy) {
+        for (long playerId : selectedPlayersCopy) {
             if (getPlayer(playerId).isDeleted()) {
                 selectedPlayers.remove(playerId);
             }

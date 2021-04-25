@@ -10,32 +10,12 @@ import android.widget.CheckBox;
 
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
-public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.MyViewHolder>  {
+public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.MyViewHolder> {
     private final PlayerManager PLAYERMANAGER = PlayerManager.getInstance();
     private final Activity ACTIVITY;
 
     public PlayerListAdapter(Activity ACTIVITY) {
         this.ACTIVITY = ACTIVITY;
-    }
-
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    class MyViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        private CheckBox checkBox;
-
-        MyViewHolder(CheckBox v) {
-            super(v);
-            checkBox = v;
-        }
-
-        void updateContents(long playerId) {
-            checkBox.setChecked(PLAYERMANAGER.isPlayerSelected(playerId));
-            checkBox.setText(PLAYERMANAGER.getPlayerName(playerId));
-            checkBox.setOnClickListener(new CheckBoxOnClickListener(playerId));
-            checkBox.setOnLongClickListener(new CheckBoxOnLongClickListener(playerId));
-        }
     }
 
     @NonNull
@@ -57,6 +37,26 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.My
     @Override
     public int getItemCount() {
         return PLAYERMANAGER.getActivePlayersCount();
+    }
+
+    // Provide a reference to the views for each data item
+    // Complex data items may need more than one view per item, and
+    // you provide access to all the views for a data item in a view holder
+    class MyViewHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        private CheckBox checkBox;
+
+        MyViewHolder(CheckBox v) {
+            super(v);
+            checkBox = v;
+        }
+
+        void updateContents(long playerId) {
+            checkBox.setChecked(PLAYERMANAGER.isPlayerSelected(playerId));
+            checkBox.setText(PLAYERMANAGER.getPlayerName(playerId));
+            checkBox.setOnClickListener(new CheckBoxOnClickListener(playerId));
+            checkBox.setOnLongClickListener(new CheckBoxOnLongClickListener(playerId));
+        }
     }
 
     private class CheckBoxOnClickListener implements View.OnClickListener {
