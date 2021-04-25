@@ -1,9 +1,9 @@
 package io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.rows;
 
-import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
-
 import java.util.List;
 import java.util.Map;
+
+import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 
 public class RowManager {
     private final int roundNumber;

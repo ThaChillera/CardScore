@@ -25,7 +25,7 @@ public abstract class ReadOnlyGameScoreManager {
         this.playerCount = selectedPlayers.length;
         this.selectedPlayers = selectedPlayers;
 
-        maxCards = 52 % playerCount == 0 ? (52 - playerCount) / playerCount : 52 / playerCount;
+        maxCards = 51 / playerCount;
         amountOfRounds = ((maxCards * 2)) - 1;
     }
 
@@ -43,6 +43,7 @@ public abstract class ReadOnlyGameScoreManager {
 
     /**
      * get card count for given round
+     *
      * @param round zero-based round number
      * @return card count
      */
@@ -73,12 +74,13 @@ public abstract class ReadOnlyGameScoreManager {
 
     /**
      * get Map of results
+     *
      * @return Map, key = playerID, value = result
      */
     public Map<Long, Integer> getResults() {
         Map<Long, Integer> results = new HashMap<>();
 
-        for (long playerID: selectedPlayers) {
+        for (long playerID : selectedPlayers) {
             results.put(playerID, getResult(playerID));
         }
 
@@ -87,20 +89,17 @@ public abstract class ReadOnlyGameScoreManager {
 
     /**
      * get result of given player ID
+     *
      * @param playerID ID of player
      * @return result
      */
     public int getResult(long playerID) {
         int result = 0;
-        for (FinishedRound round: finishedRounds) {
+        for (FinishedRound round : finishedRounds) {
             result += round.getResults().get(playerID);
         }
 
         return result;
-    }
-
-    public enum EntryType {
-        PREDICTION, SCORE
     }
 
     public GameScoreManager.EntryType getLastEntryType() {
@@ -109,5 +108,9 @@ public abstract class ReadOnlyGameScoreManager {
 
     public GameScoreManager.EntryType getNextEntryType() {
         return predictedRound == null ? GameScoreManager.EntryType.PREDICTION : GameScoreManager.EntryType.SCORE;
+    }
+
+    public enum EntryType {
+        PREDICTION, SCORE
     }
 }

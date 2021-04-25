@@ -4,13 +4,10 @@ package io.github.thachillera.cardsscorekeeper.data.game.boerenBridge;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
+import java.util.Map;
+
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.FinishedRound;
 import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.rounds.PredictedRound;
-import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
-
-import java.util.Arrays;
-import java.util.Map;
 
 public class GameScoreManager extends ReadOnlyGameScoreManager {
 
@@ -19,8 +16,22 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
     }
 
     /**
+     * Loads game data and sets selected players in PlayerManager
+     *
+     * @param gameData
+     * @return restored savegame
+     */
+    public static GameScoreManager loadGameData(String gameData) {
+        //set local data
+        GameScoreManager gameScoreManager = new Gson().fromJson(gameData, GameScoreManager.class);
+
+        return gameScoreManager;
+    }
+
+    /**
      * enter values.
      * Will automatically assign as prediction or score, depending on game state
+     *
      * @param values Tuple, key = playerID, value = result
      */
     public void enterValues(Map<Long, Integer> values) {
@@ -36,6 +47,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
     /**
      * enter predictions
+     *
      * @param predictions Tuple, key = playerID, value = result
      */
     public void enterPredictions(Map<Long, Integer> predictions) {
@@ -49,6 +61,7 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
 
     /**
      * enter scores
+     *
      * @param scores Tuple, key = playerID, value = result
      */
     public void enterScores(Map<Long, Integer> scores) {
@@ -82,18 +95,6 @@ public class GameScoreManager extends ReadOnlyGameScoreManager {
         Gson gson = builder.create();
 
         return gson.toJson(this);
-    }
-
-    /**
-     * Loads game data and sets selected players in PlayerManager
-     * @param gameData
-     * @return restored savegame
-     */
-    public static GameScoreManager loadGameData(String gameData) {
-        //set local data
-        GameScoreManager gameScoreManager = new Gson().fromJson(gameData, GameScoreManager.class);
-
-        return gameScoreManager;
     }
 
     public long[] getSelectedPlayers() {

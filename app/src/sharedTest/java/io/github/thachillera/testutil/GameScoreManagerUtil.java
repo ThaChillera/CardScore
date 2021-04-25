@@ -45,8 +45,8 @@ public class GameScoreManagerUtil {
 
     /**
      * Simulate a simple game
-     * Player 1 always predicts and gets 0
-     * Player 2 always predicts and gets every round
+     * Player 1 always predicts and gets every round
+     * Player 2 always predicts and gets 0
      *
      * @param roundsPlayed
      * @return
@@ -63,19 +63,19 @@ public class GameScoreManagerUtil {
 
         for (int i = 0; i < roundsPlayed + 1; i++) {
             Map<Long, Integer> predictions = new HashMap();
-            predictions.put(1L, 0);
-            predictions.put(2L, i + 1);
+            predictions.put(1L, i + 1);
+            predictions.put(2L, 0);
 
             gameScoreManager.enterPredictions(predictions);
 
             Map<Long, Integer> scores = new HashMap();
-            scores.put(1L, 0);
-            scores.put(2L, i + 1);
+            scores.put(1L, i + 1);
+            scores.put(2L, 0);
 
             gameScoreManager.enterScores(scores);
         }
 
-        int[] expectedResult = getSimpleGameExpectedScores(roundsPlayed);
+        int[] expectedResult = getSimpleGameExpectedScores(2, roundsPlayed);
 
         if (gameScoreManager.getResult(1) != expectedResult[0]
                 && gameScoreManager.getResult(2) != expectedResult[1]) {
@@ -85,11 +85,25 @@ public class GameScoreManagerUtil {
         return gameScoreManager;
     }
 
-    public static int[] getSimpleGameExpectedScores(int roundsPlayed) {
+    /**
+     * Get Expected scores for a 'simple' game, where p1 predicts & wins every round
+     * @param playerCount
+     * @param roundsPlayed
+     * @return
+     */
+    public static int[] getSimpleGameExpectedScores(int playerCount, int roundsPlayed) {
         if (roundsPlayed < 0) {
-            return new int[] {0,0};
+            return new int[playerCount];
         } else {
-            return new int[]{(roundsPlayed + 1) * 10, (roundsPlayed + 1) * 10 + facorialScore(roundsPlayed)};
+            int[] score = new int[playerCount];
+            for (int i = 0; i < playerCount; i++) {
+                if (i == 0) {
+                    score[i] = (roundsPlayed + 1) * 10 + facorialScore(roundsPlayed);
+                } else {
+                    score[i] = (roundsPlayed + 1) * 10;
+                }
+            }
+            return score;
         }
     }
 

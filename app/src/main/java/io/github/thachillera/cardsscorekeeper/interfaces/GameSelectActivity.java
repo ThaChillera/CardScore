@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
-import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge;
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
+import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge;
 import io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity;
 
 public class GameSelectActivity extends AppCompatActivity {

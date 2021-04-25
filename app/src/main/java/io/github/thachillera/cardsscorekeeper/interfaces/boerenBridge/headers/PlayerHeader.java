@@ -12,8 +12,8 @@ import io.github.thachillera.cardsscorekeeper.R;
  * Displays the player name & total score
  */
 public class PlayerHeader extends RelativeLayout {
-    TextView playerScoreView;
     private final long playerID;
+    TextView playerScoreView;
 
     public PlayerHeader(Context context, String name, long playerID) {
         super(context);

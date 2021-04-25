@@ -14,15 +14,17 @@ import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
 public class PersistenceManager {
 
+    private final static String GAME_DATA_LOCATION = "gamedata.json";
+    private final static String PLAYER_DATA_LOCATION = "playerData.json";
     private static PersistenceManager instance = new PersistenceManager();
+    private Context context;
 
-    private PersistenceManager() { }
+    private PersistenceManager() {
+    }
 
     public static PersistenceManager getInstance() {
         return instance;
     }
-
-    private Context context;
 
     public void setContext(Context context) {
         if (this.context == null) {
@@ -32,7 +34,8 @@ public class PersistenceManager {
 
     /**
      * save data to location
-     * @param data data to save
+     *
+     * @param data     data to save
      * @param location place to save data
      * @throws IOException
      */
@@ -44,13 +47,14 @@ public class PersistenceManager {
 
     /**
      * load saved data from location
+     *
      * @param location location to load data from
      * @return loaded data
      * @throws IOException
      */
     private String load(String location) throws IOException {
         FileInputStream inputStream = context.openFileInput(location);
-        byte[] buffer = new byte[(int)inputStream.getChannel().size()];
+        byte[] buffer = new byte[(int) inputStream.getChannel().size()];
         inputStream.read(buffer);
 
         if (inputStream.available() > 0) {
@@ -60,14 +64,13 @@ public class PersistenceManager {
         return new String(buffer);
     }
 
-    private final static String GAME_DATA_LOCATION = "gamedata.json";
-
     public boolean hasExistingSavedGame() {
-        return new File(context.getFilesDir(),GAME_DATA_LOCATION).exists();
+        return new File(context.getFilesDir(), GAME_DATA_LOCATION).exists();
     }
 
     /**
      * Save game data
+     *
      * @param gameScoreManager gamescoremanager to save
      */
     public void saveGame(@NonNull GameScoreManager gameScoreManager) {
@@ -80,6 +83,7 @@ public class PersistenceManager {
 
     /**
      * Loads game data
+     *
      * @return saved GameScoreManager. If an error occurs, returns empty gamescoremanager
      */
     public GameScoreManager loadGame() {
@@ -100,10 +104,8 @@ public class PersistenceManager {
         }
     }
 
-    private final static String PLAYER_DATA_LOCATION = "playerData.json";
-
     public boolean hasExistingSavedPlayers() {
-        return new File(context.getFilesDir(),PLAYER_DATA_LOCATION).exists();
+        return new File(context.getFilesDir(), PLAYER_DATA_LOCATION).exists();
     }
 
     /**

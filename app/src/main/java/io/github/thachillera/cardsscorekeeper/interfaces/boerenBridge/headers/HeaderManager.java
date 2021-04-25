@@ -1,9 +1,9 @@
 package io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.headers;
 
-import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
-
 import java.util.List;
 import java.util.Map;
+
+import io.github.thachillera.cardsscorekeeper.data.game.boerenBridge.ReadOnlyGameScoreManager;
 
 public class HeaderManager {
     private final List<PlayerHeader> playerHeaders;
@@ -16,7 +16,7 @@ public class HeaderManager {
 
     public void updateScores() {
         Map<Long, Integer> results = gameScoreManager.getResults();
-        for (PlayerHeader playerHeader: playerHeaders) {
+        for (PlayerHeader playerHeader : playerHeaders) {
             playerHeader.setPlayerScoreView(results.get(playerHeader.getPlayerID()));
         }
     }
