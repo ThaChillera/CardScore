@@ -8,7 +8,7 @@
     tools:context="io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity"
     tools:showIn="@layout/activity_player_select">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playerselect_playerlist"
         android:scrollbars="vertical"
         android:layout_width="match_parent"

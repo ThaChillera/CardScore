@@ -2,11 +2,12 @@ package io.github.thachillera.cardsscorekeeper.interfaces.player;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 
