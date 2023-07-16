@@ -1,23 +1,19 @@
 package io.github.thachillera.cardsscorekeeper.interfaces;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import io.github.thachillera.cardsscorekeeper.R;
 import io.github.thachillera.cardsscorekeeper.data.PersistenceManager;
-import io.github.thachillera.cardsscorekeeper.data.players.PlayerManager;
 import io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge;
 import io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity;
 
 public class GameSelectActivity extends AppCompatActivity {
-    PlayerManager playerManager = PlayerManager.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,43 +34,22 @@ public class GameSelectActivity extends AppCompatActivity {
 
             builder.setMessage(R.string.savegame_load_request_body)
                     .setTitle(R.string.savegame_load_request_title)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startBoerenBridge(true);
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            startBoerenBridge(false);
-                        }
-                    });
+                    .setPositiveButton(R.string.ok, (dialog, which) -> startBoerenBridge())
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> startSelectPlayers());
 
             builder.create().show();
         } else {
-            startBoerenBridge();
+            startSelectPlayers();
         }
     }
 
     private void startBoerenBridge() {
-        startBoerenBridge(false);
+        Intent intent = new Intent(this, BoerenBridge.class);
+        intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
+        startActivity(intent);
     }
 
-    private void startBoerenBridge(boolean loadSave) {
-        if (loadSave) {
-            Intent intent = new Intent(this, BoerenBridge.class);
-            intent.putExtra(BoerenBridge.LOADSAVEGAMEEXTRA, true);
-            startActivity(intent);
-        } else if (playerManager.getSelectedPlayerCount() > 1) {
-            Intent intent = new Intent(this, BoerenBridge.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, getString(R.string.game_select_insufficient_players), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void selectPlayers(View v) {
+    private void startSelectPlayers() {
         Intent intent = new Intent(this, PlayerSelectActivity.class);
         startActivity(intent);
     }

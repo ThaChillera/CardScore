@@ -14,10 +14,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/player_select_return"
-        android:onClick="onClickReturnClick"
-        android:layout_alignParentBottom="true"/>
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:layout_gravity="start"
+            android:text="@string/player_select_return"
+            android:onClick="onClickReturnClick"
+            style="?android:attr/buttonBarButtonStyle" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:layout_gravity="end"
+            android:text="@string/player_select_start"
+            android:onClick="onClickStartClick"
+            style="?android:attr/buttonBarButtonStyle" />
+    </LinearLayout>
+
+
 </RelativeLayout>
