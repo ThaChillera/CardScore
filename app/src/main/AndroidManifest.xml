@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.boerenBridge.BoerenBridge"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.player.PlayerSelectActivity"
+            android:label="@string/title_activity_player_select"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name="io.github.thachillera.cardsscorekeeper.interfaces.GameSelectActivity"
+            android:label="@string/app_name_short"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="io.github.thachillera.cardsscorekeeper.interfaces.player.EditPlayerActivity"></activity>
+    </application>
+
+</manifest>

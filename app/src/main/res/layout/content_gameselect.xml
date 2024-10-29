@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="io.github.thachillera.cardsscorekeeper.interfaces.GameSelectActivity"
+    tools:showIn="@layout/activity_gameselect">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:text="@string/boeren_bridge_title"
+        android:onClick="onGameSelect"/>
+
+</androidx.core.widget.NestedScrollView>

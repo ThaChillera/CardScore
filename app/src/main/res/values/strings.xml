@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Cards Score Keeper</string>
+    <string name="app_name_short">CSK</string>
+    <string name="card_count">Card Count:</string>
+    <string name="card_count_info">Card Count</string>
+    <string name="round_number_info">Round Number</string>
+    <string name="predict_score">Predict Score</string>
+    <string name="enter_score">Enter Score</string>
+    <string name="prediction">Prediction:</string>
+    <string name="score">Score:</string>
+
+    <string name="invalid_number">Numbers cannot be less than 0</string>
+    <string name="invalid_score">Entered number don\'t add up to the expected card count</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="title_activity_player_select">Select Players</string>
+    <string name="game_select_insufficient_players">Don\'t forget to select multiple players</string>
+    <string name="title_activity_game_select">Select Game</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="boeren_bridge_title">Boeren Bridge</string>
+    <string name="player_select_return">Return</string>
+    <string name="player_select_start">Start</string>
+
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="name_short">Name Short</string>
+    <string name="name">Name</string>
+
+    <string name="editPlayer_missing_name">No name entered!</string>
+    <string name="editPlayer_missing_shortname">No short name entered!</string>
+    <string name="editPlayer_too_long_shortname">Shortname may only be maximum 3 characters</string>
+    <string name="editPlayer_input_error">Player saving error!</string>
+
+    <string name="savegame_load_request_title">Save game found!</string>
+    <string name="savegame_load_request_body">Do you want to load this save game?</string>
+
+    <string name="undo_button">Undo Input</string>
+</resources>
